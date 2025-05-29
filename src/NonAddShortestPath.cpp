@@ -9,7 +9,7 @@
 #include "PairOD.h"
 
 #include <limits>
-#include <stdlib.h>
+#include <cstdlib>
 #include <sstream>
 #include <cassert>
 
