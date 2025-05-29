@@ -4,7 +4,7 @@
 #include "UsedTypes.h"
 
 #include <string>
-#include <tr1/unordered_map>
+#include <unordered_map>
 #include <limits>
 #include <list>
 
@@ -147,7 +147,7 @@ class StarNetwork {
 		mutable int curNode_;
 		mutable int curLink_;
 		mutable int curOnlyLink_;
-		std::tr1::unordered_map<int, int> idMap_;
+		std::unordered_map<int, int> idMap_;
 		bool linkAdded_;
 	
 		/** Creates table of mapping between node ID and node indexes.

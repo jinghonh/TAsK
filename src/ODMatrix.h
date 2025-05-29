@@ -4,7 +4,7 @@
 #include "UsedTypes.h"
 
 #include <string>
-#include <tr1/unordered_map>
+#include <unordered_map>
 #include <vector>
 
 class Origin;
@@ -68,7 +68,7 @@ class ODMatrix {
 		const int nbNodes_; 
 		int nbODPairs_;
 		std::vector<Origin*> odMatrix_; /**< internal representation of O-D matrix */
-		std::tr1::unordered_map<std::string, FPType> demandByIndex_; /**< special structure that allows to */
+		std::unordered_map<std::string, FPType> demandByIndex_; /**< special structure that allows to */
 																	/**< get demand of node given origin and destination */
 																	/**< indexes */	
 		inline std::string createKey(int originIndex, int destIndex) const;	

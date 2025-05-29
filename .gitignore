@@ -26,3 +26,10 @@
 *.exe
 *.out
 *.app
+
+*.idea
+*.cache
+build
+.specstory
+.cursorindexingignore
+src/ta

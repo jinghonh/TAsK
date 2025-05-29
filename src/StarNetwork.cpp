@@ -60,7 +60,7 @@ void StarNetwork::linkNodes(){
 	}
 };
 void StarNetwork::createIndexes(){
-	std::tr1::unordered_map<int, int>::const_iterator got;
+	std::unordered_map<int, int>::const_iterator got;
 	int id = -1;
 	int count = size_;
 	for (StarLink *link = beginOnlyLink(); link != NULL; link = getNextOnlyLink()){
@@ -69,7 +69,7 @@ void StarNetwork::createIndexes(){
 								// during construction
 		got = idMap_.find(id);
 		if (got == idMap_.end()) {
-			idMap_.insert(std::make_pair<int, int>(id, count));
+			idMap_.insert(std::make_pair(id, count));
 			++count;
 			assert(count <= nbLinks_);
 		}
@@ -83,7 +83,7 @@ void StarNetwork::addNode(StarNode *node){
 		throw Error("Two nodes were added in a row. Only nodes with out-going links can be added");
 	node->setIndex(size_);
 	nodes_[size_] = node;
-	idMap_.insert(std::make_pair<int, int>(node->getID(), size_)); 
+	idMap_.insert(std::make_pair(node->getID(), size_)); 
 	pointers_[size_] = sizeLinks_;
 	++size_;
 	pointers_[size_] = nbLinks_;
@@ -180,7 +180,7 @@ void StarNetwork::print(){
 };
 
 int StarNetwork::getNodeIndex(int id){
-	std::tr1::unordered_map<int, int>::const_iterator got = idMap_.find(id);
+	std::unordered_map<int, int>::const_iterator got = idMap_.find(id);
 	if (got == idMap_.end()) {
 		std::stringstream str;
 		str << "Cannot find id = " << id;
@@ -245,7 +245,7 @@ StarNode* StarNetwork::getNodeWithLinks(int index){
 
 
 int StarNetwork::findID(int index) const {
-	for(std::tr1::unordered_map<int, int>::const_iterator it = idMap_.begin();
+	for(std::unordered_map<int, int>::const_iterator it = idMap_.begin();
 			it != idMap_.end(); ++it){
 		if (it->second == index) {
 			return it->first;

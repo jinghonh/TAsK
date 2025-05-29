@@ -5,7 +5,7 @@
 
 #include <vector>
 #include <list>
-#include <tr1/unordered_set>
+#include <unordered_set>
 
 class ShortestPath;
 class DAGraphTapas;
@@ -78,7 +78,7 @@ class PASManager {
 		const FPType mu_;
 		const FPType v_;
 		
-		std::tr1::unordered_set<int> setOfNodes_; /**< At the moment tr1 unordered set is used, 
+		std::unordered_set<int> setOfNodes_; /**< At the moment tr1 unordered set is used, 
 													alternative is std set. 
 												\note tests on bigger instances are 
 												needed to see the difference in performance

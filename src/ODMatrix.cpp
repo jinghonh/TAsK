@@ -76,7 +76,7 @@ void ODMatrix::setIndexes(){
 };
 
 FPType ODMatrix::getDemandByIndex(int originIndex, int destIndex) const{
-	std::tr1::unordered_map<std::string, FPType>::const_iterator got = demandByIndex_.find(createKey(originIndex, destIndex));
+	std::unordered_map<std::string, FPType>::const_iterator got = demandByIndex_.find(createKey(originIndex, destIndex));
 	if (got == demandByIndex_.end()) return 0.0;
 	return got->second; 
 };
