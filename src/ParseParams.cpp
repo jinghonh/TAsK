@@ -8,10 +8,8 @@ ParseParams::ParseParams() : longComment_(false){
 
 };
 
-ParseParams::~ParseParams(){
-
-};
-
+ParseParams::~ParseParams()= default;
+// 读取参数文件
 void ParseParams::execute(const std::string &fileName, Params *params){
 	// open file
 	longComment_ = false;
@@ -19,16 +17,16 @@ void ParseParams::execute(const std::string &fileName, Params *params){
 	if (paramsFile.is_open()) {
 		
 		// parse all fields
-		std::string line = "";
-		std::string field = "";
-		std::string value = "";
+		std::string line;
+		std::string field;
+		std::string value;
 		while ( paramsFile.good() ) {
 			getline(paramsFile, line);
 			line = skipComments(line);
 			if (!Utils::deleteWhiteSpaces(line).empty()){
-				field = Utils::getSubString("<", ">", line); // First entry of form <FIELD NAME> 
+				field = Utils::getSubString("<", ">", line); // The First entry of form <FIELD NAME>
 															 // will be treated.
-				value = Utils::getSubString("{", "}", line); // First entry of form {VALUE} 
+				value = Utils::getSubString("{", "}", line); // The First entry of form {VALUE}
 															 // will be treated.
 				params->addParameter(field, value);
 			}
@@ -45,7 +43,7 @@ void ParseParams::execute(const std::string &fileName, Params *params){
 	
 };
 
-std::string ParseParams::skipComments(std::string line){
+std::string ParseParams::skipComments(const std::string& line){
 	size_t found;
 	if (longComment_) {
 		found = line.find("*/");

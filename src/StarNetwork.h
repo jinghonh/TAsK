@@ -11,126 +11,114 @@
 class StarNode;
 class StarLink;
 
-/** \brief This class implements forward star graph representation.
-	\details For details see \cite Sheffi1985. */
+/** \brief 此类实现前向星图表示法。
+	\details 详细信息请参见 \cite Sheffi1985。 */
 class StarNetwork {
 	public:
 		StarNetwork(int nbNodes, int nbLinks, std::string &netName);
 		~StarNetwork();
 		
-		/** Adds node \b node to the internal data structure. 
-			\note Node is assumed to have out-going links that must be added 
-			after node addition, using method 
-			addLink(). This method might throw an error.
+		/** 将节点 \b node 添加到内部数据结构中。
+			\note 假设节点有出边，必须在节点添加后使用addLink()方法添加这些出边。
+			此方法可能会抛出错误。
 		*/
 		void addNode(StarNode *node);
 
-		/** Adds link \b link to internal data structure. Links are associated with the last 
-			added node. This method might throw an error.
+		/** 将链接 \b link 添加到内部数据结构中。链接与最后添加的节点相关联。
+			此方法可能会抛出错误。
 		*/
 		void addLink(StarLink *link);
 		
-		/** This method must be called once after all links and nodes were added to the network.
-			It create internal indexes (all internal indexes follow the convention that it is a number
-			between 0 and number of nodes, or number of links for node and link indexes respectively) 
-			for all nodes and sets them appropriately.
+		/** 此方法必须在所有链接和节点添加到网络后调用一次。
+			它为所有节点创建内部索引（所有内部索引遵循约定：对于节点和链接索引，
+			分别是0到节点数量或链接数量之间的数字），并适当设置它们。
 		*/
 		void linkNodes();
 		
-		/** @return name of the network.
+		/** @return 网络的名称。
 		*/
 		std::string getNetName() const;
-		/** @return total number of nodes in the network.
+		/** @return 网络中节点的总数。
 		*/
 		int getNbNodes() const;
-		/** @return total number of links in the network.
+		/** @return 网络中链接的总数。
 		*/
 		int getNbLinks() const;
 		
-		/** @return pointer to the first node. It must be used together with getNextNode() method.
-			For example, the entire forward star network
-			can be iterated as follows:
+		/** @return 指向第一个节点的指针。必须与getNextNode()方法一起使用。
+			例如，可以按以下方式遍历整个前向星网络：
 			@code for (StarNode* node = beginNode(); node != NULL; node = getNextNode()) {
 			    for (StarLink* link = beginLink(); link != NULL; link = getNextLink()) {
-					//do something with link and/or node
+					//对链接和/或节点进行操作
 				}
 			} @endcode 
-			\warning it is not safe to use this method in a nested loop when this method is 
-			called more than once on the same object.
+			\warning 当在同一对象上多次调用此方法时，在嵌套循环中使用此方法是不安全的。
 		*/
 		StarNode* beginNode() const;
-		/** Starts iteration process beginning with a node specified in the input by 
-			index \b index. It must be used together with getNextNode() method.
-			\warning it is not safe to use this method in a nested loop when this method is 
-			called more than once on the same object.
+		/** 从输入中指定索引 \b index 的节点开始迭代过程。必须与getNextNode()方法一起使用。
+			\warning 当在同一对象上多次调用此方法时，在嵌套循环中使用此方法是不安全的。
 		*/
-		StarNode* beginNode(int index) const; 
-		/** \warning it is not safe to use this method in a nested loop when this method is 
-			called more than once on the same object.
+		StarNode* beginNode(int index) const;
+		/** \warning 当在同一对象上多次调用此方法时，在嵌套循环中使用此方法是不安全的。
 		*/
 		StarNode* getNextNode() const;
-		/** This method must be used together with getNextLink() method.
-			\warning it is not safe to use this method in a nested loop when this method is 
-			called more than once on the same object.
+		/** 此方法必须与getNextLink()方法一起使用。
+			\warning 当在同一对象上多次调用此方法时，在嵌套循环中使用此方法是不安全的。
 		*/
 		StarLink* beginLink() const;
-		/** \warning it is not safe to use this method in a nested loop when this method is 
-			called more than once on the same object.
+		/** \warning 当在同一对象上多次调用此方法时，在嵌套循环中使用此方法是不安全的。
 		*/
 		StarLink* getNextLink() const;
 
-		/** This method is used in order to iterate through all links of the network. 
-			It must be used together with getNextOnlyLink() method.
-			\warning it is not safe to use this method in a nested loop when this method is 
-			called more than once on the same object.
+		/** 此方法用于遍历网络的所有链接。必须与getNextOnlyLink()方法一起使用。
+			\warning 当在同一对象上多次调用此方法时，在嵌套循环中使用此方法是不安全的。
 		*/
 		StarLink* beginOnlyLink() const;
-		/** \warning it is not safe to use this method in a nested loop when this method is 
-			called more than once on the same object.
+		/** \warning 当在同一对象上多次调用此方法时，在嵌套循环中使用此方法是不安全的。
 		*/
 		StarLink* getNextOnlyLink() const;
 		
-		/** @return a pointer to a link specified by index \b linkIndex.
+		/** @return 指向由索引 \b linkIndex 指定的链接的指针。
 		*/
 		StarLink* getLink(int linkIndex) const;
 		
-		/** @return a pointer of type StarNode* to a node specified by index \b index. 
-			However, nodes of this type are created only if they have out-going links. That's why
-			only such node can be returned by this method. If another node is attempted to get by
-			using this method, then NULL is returned. 
+		/** @return 指向由索引 \b index 指定的节点的StarNode*类型指针。
+			但是，只有当节点有出边时才会创建此类型的节点。这就是为什么
+			此方法只能返回这种节点。如果尝试使用此方法获取另一个节点，
+			则返回NULL。
 		*/
 		StarNode* getNodeWithLinks(int index);
 		
-		/** @return internal index of a node specified by its ID 
-		 	\note Avoid calling this function as much as possible.
-		 	It has average case complexity: constant, 
-		 	worst case complexity: linear in container size.
+		/** @return 由其ID指定的节点的内部索引
+		 	\note 尽量避免调用此函数。
+		 	它的平均情况复杂度：常数，
+		 	最坏情况复杂度：与容器大小成线性关系。
 		*/
 		int getNodeIndex(int id);
 		
-		/** Prints network on screen.
+		/** 在屏幕上打印网络。
 		*/
 		void print();
 
-		/** Writes link flows to file \b fileName in the following format: 
+		/** 将链接流量写入文件 \b fileName，格式如下：
 			nodeFrom nodeTo linkFlow travelTime 
-			Default number of printed digits for linkFlow and travelTime is 16.
+			linkFlow和travelTime的默认打印位数为16。
 		*/
 		void printToFile(const std::string& fileName, int precision = 16);
 		
-		/** Loads link flows from file specified by \b fileName (link travel times are recalculated). 
-			File format is:  nodeFrom nodeTo linkFlow travelTime
-			\note Link flows must correspond to the created network object, i.e.
-			the one that was specified in file with parameters.
+		/** 从文件 \b fileName 加载链接流量（重新计算链接行程时间）。
+			文件格式为：nodeFrom nodeTo linkFlow travelTime
+			\note 链接流量必须与创建的网络对象相对应，即
+			与参数文件中指定的一致。
 		*/
 		void loadFromFile(const std::string& fileName);
 		
-		/** Goes through all links and evaluates all link cost functions.
+		/** 遍历所有链接并评估所有链接成本函数。
 		*/
 		void calculateLinkCosts();
 		
-		/** @return node ID given its internal index.
-			Complexity is linear in the container size (total number of nodes).
+		/** @return 给定内部索引的节点ID。
+			复杂度与容器大小（节点总数）成线性关系。
 		*/
 		int findID(int index) const;
 
@@ -150,14 +138,13 @@ class StarNetwork {
 		std::unordered_map<int, int> idMap_;
 		bool linkAdded_;
 	
-		/** Creates table of mapping between node ID and node indexes.
+		/** 创建节点ID和节点索引之间的映射表。
 		*/
 		void createIndexes();
-		/** This method is used in loadFromFile(). It attempts to load link flow \b\ flow to 
-			a link with nodes 
-			\b nodeFrom and \b nodeTo. If such link does not exists false is returned.
+		/** 此方法在loadFromFile()中使用。它尝试将链接流量 \b flow 加载到
+			有节点 \b nodeFrom 和 \b nodeTo 的链接上。如果这样的链接不存在，则返回false。
 		*/
-		bool assignLinkFlow(int nodeFrom, int nodeTo, FPType flow);
+		bool assignLinkFlow(int nodeFrom, int nodeTo, FPType flow) const;
 };
 
 #endif

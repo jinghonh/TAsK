@@ -10,127 +10,111 @@ class StarNetwork;
 class DAGraphNode;
 class ODMatrix;
 
-/** \brief This class is abstract. It implements basic functionality of 
-	directed acyclic graphs (DAG) and provides interface for derived classes 
-	to perform flow movements within each DAG. 
+/** \brief 该类为有向无环图（DAG）的抽象基类，实现了DAG的基本功能，并为派生类提供接口以在每个DAG内执行流量移动。
 */
 class DAGraph {
 	
 	public:
 		
-		virtual ~DAGraph();
+		virtual ~DAGraph(); // 虚析构函数，确保派生类析构时正确释放资源
 		
-		/** Adds link to the graph if it is not in it yet and allocates corresponding
-			DAGraphNode objects if they were not allocated before.
+		/** 如果link不在图中则添加，并分配对应的DAGraphNode对象（如果之前未分配）。
 		*/
 		bool addLink(StarLink *link);
 		
-		/** Deletes unused links. A link is unused if the corresponding origin flow is
-			less than ZERO_FLOW and the connectivity of the graph is maintained.
+		/** 删除未使用的link。若对应起点流量小于ZERO_FLOW且保持图的连通性，则该link被视为未使用。
 		*/
 		bool removeUnusedLinks();
 
-		/** Also deletes unused links, but iterates through the list of links passed as a 
-			parameter.
+		/** 也删除未使用的link，但遍历作为参数传递的link列表。
 		*/
 		bool removeUnusedLinks(const std::list<StarLink*> &links); 	
 
-		/** Sets the reference listRef with links that go out of node with index nodeIndex.
+		/** 将引用listRef设置为索引为nodeIndex的节点的出边列表。
 		*/
 		void getOutLinks(int nodeIndex, std::list<StarLink*>& listRef);
 
-		/** Sets the reference listRef with links that come into node with index nodeIndex.
+		/** 将引用listRef设置为索引为nodeIndex的节点的入边列表。
 		*/
 		void getInLinks(int nodeIndex, std::list<StarLink*>& listRef);
 
-		/** @return a copy of the list with links that go out of node with index nodeIndex.
+		/** 返回索引为nodeIndex的节点的出边列表的拷贝。
 		*/
 		std::list<StarLink*> getOutLinksCopy(int nodeIndex) const;
 
-		/** @return a copy of the list with links that come into node with index nodeIndex.
+		/** 返回索引为nodeIndex的节点的入边列表的拷贝。
 		*/
 		std::list<StarLink*> getInLinksCopy(int nodeIndex) const;
 		
-		/** Starts iterating trough all nodes in ascending topological order (i.e. it starts from
-			origin).
-			@return index of the first node in ascending topological order, -1 if list is empty
+		/** 开始按拓扑升序遍历所有节点（即从起点开始）。
+			@return 拓扑升序的第一个节点索引，如果列表为空则返回-1。
 		*/
 		int beginAscPass();
 
-		/**	@return index of the current node in ascending topological order, -1 if end of list
+		/** 返回拓扑升序的当前节点索引，如果到达列表末尾则返回-1。
 		*/
 		int getNextAscPass();
 
-		/** Starts iterating trough all nodes in descending topological order (i.e. it starts from
-			the furthest destination node).
-			@return index of the first node in descending topological order, -1 if list is empty
+		/** 开始按拓扑降序遍历所有节点（即从最远的目标节点开始）。
+			@return 拓扑降序的第一个节点索引，如果列表为空则返回-1。
 		*/
 		int beginDescPass();
 
-		/**	@return index of the current node in descending topological order, -1 if end of list
+		/** 返回拓扑降序的当前节点索引，如果到达列表末尾则返回-1。
 		*/
 		int getNextDescPass();
 		
-		/** Creates a topological order of DAG nodes.
+		/** 创建DAG节点的拓扑序。
 		*/
 		bool topologicalSort();
 
-		/** Assigns a minimum and maximum distance to each node of DAG. 
-			It is assumed that topological order exists and the graph was
-			topologically sorted beforehand.
-			Algorithms stops if the destination node destIndex was reached 
-			(as a result min and max
-			distance to nodes that are topologically after destIndex are not calculated).
-			If these distances must be calculated for all nodes destIndex must be set to -1.
-			\warning methods assumes that topological order starts with origin node.
+		/** 为DAG的每个节点分配最小和最大距离。
+			@param destIndex 目标节点索引。如果到达目标节点destIndex，算法将停止（因此，拓扑上在destIndex之后的节点的最小和最大距离不会被计算）。
+			@param destIndex 如果必须为所有节点计算这些距离，则destIndex必须设置为-1。
+			\warning 此方法假定拓扑序以起点节点开始。
 		*/
 		void buildMinMaxTrees(int destIndex);
 
-		/** Implements algorithm of addition of better links to the graph in such a way that
-			acyclicity is maintained. Algorithm is described in the paper of Nie 
+		/** 实现向图中添加更优link的算法，同时保持无环性。算法详见Nie的论文
 			"A class of bush-based algorithms for the traffic assignment problem",
-			Transportation Research, 2010. 
+			Transportation Research, 2010.
 		*/
 		bool addBetterLinks();
 		
-		/** This method must be implemented by derived classes. It must change origin flows and 
-			corresponding link flows and travel times by brining the current solution closer to 
-			equilibrium.
+		/** 此方法必须由派生类实现。它必须通过将当前解更接近平衡状态来更改起点流量以及相应的路段流量和行程时间。
 		*/
 		virtual bool moveFlow() = 0;
 		
-		/** This method is used in OriginSet in order to initialise all bushes and in derived 
-			classes	to keep origin flows consistent with performed flow moves.
-			Adds demand to internal structure that stores origin flows for each link of the bush.
+		/** 此方法用于OriginSet中初始化所有bush，并在派生类中保持与执行的流量移动一致的起点流量。
+			将需求添加到内部结构中，该结构存储每个bush链接的起始流量。
 		*/
 		void addOriginFlow(int linkIndex, FPType demand);
 
-		/** This method is used only in PAS class  because it adds link if it was not in the bush 
-			when the origin flow was added. 
+		/** 此方法仅在PAS类中使用，因为它在添加起始流量时如果链接不在bush中则添加链接。
 		*/
 		void addOriginFlowAndCreateLink(StarLink* link, FPType demand);
 
-		/** Sets origin flow of link with index index to value flow.
+		/** 设置索引为index的链接的起始流量为flow。
 		*/
 		void setOriginFlow(int index, FPType flow);
 
-		/** Sets origin flow of link with index index to zero.
+		/** 将索引为index的链接的起始流量设置为零。
 		*/
 		void setOriginFlowToZero(int linkIndex);
 
-		/** @return origin flow of link specified by linkIndex.
+		/** @return 返回由linkIndex指定的链接的起始流量。
 		*/
 		FPType getOriginFlow(int linkIndex) const;
 		
-		/** @return origin index where this bush belongs to.
+		/** @return 返回该bush所属的起点索引。
 		*/
 		int getOriginIndex() const;
 		
-		/** Prints on screen relevant information about this bush.
+		/** 在屏幕上打印有关此bush的相关信息。
 		*/
 		void print() const;
 
-		/** Prints on screen origin flows. For debugging.
+		/** 在屏幕上打印起始流量。供调试使用。
 		*/
 		void printOriginFlow() const;
 		
@@ -142,12 +126,12 @@ class DAGraph {
 		*/
 		void printMaxShPath(int node);
 		
-		/** Checks if origin flows satisfy network flow constraints.
-			@return maximum deviation of flow.
+		/** 检查起点流量是否满足网络流约束。
+			@return 流量的最大偏差。
 		*/
 		FPType checkOFlowsFeasibility();
 		
-		/** @return number of links that belong to this bush. 
+		/** @return 返回属于该bush的链接数量。
 		*/
 		FPType getNbLinksInBush() const;
 		
@@ -162,39 +146,35 @@ class DAGraph {
 	
 		static FPType zeroFlow_;
 
-		/** @param net pointer to network.
-			@param mat pointer to O-D matrix.
-			@param zeroFlow link flow tolerance.
-			@param originIndex origin index.
+		/** @param net 指向网络的指针。
+			@param mat 指向O-D矩阵的指针。
+			@param zeroFlow 链路流量容忍度。
+			@param originIndex 起点索引。
 		*/
 		DAGraph(StarNetwork *net, ODMatrix *mat, FPType zeroFlow, int originIndex);
 		
-		/** @return demand of node with index nodeIndex or zero if a given node is not a destination.
+		/** @return 返回索引为nodeIndex的节点的需求量，如果给定节点不是目标节点，则返回零。
 		*/
 		FPType getDemand(int nodeIndex) const;
 		
-		/** @param index index of a node that belongs to this DAG. If other index is passed, then
-			assertion will execute and program will terminate.
-			@return DAGraphNode object. 
+		/** @param index 获取指定索引的DAGraphNode对象
 		*/
 		DAGraphNode* getNode(int index) const;
 		
-		/** Removes a link specified by index from DAG if the connectivity of DAG is retained. 
-			@return true if link was removed, false otherwise (link is not going to be removed
-			if DAG is not connected after this operation. 
+		/** 如果DAG的连通性得以保留，则从DAG中移除由索引指定的链接。
+			@return 如果链接已移除，则返回true，否则返回false（如果此操作后DAG未连接，则不会移除链接）。
 		*/
 		bool removeLink(int index);
 
-		/** Throws an exception if a back edge is detected. This method can be overridden by derived 
-			classes, see DAGraphTapas.
+		/** 如果检测到回边，则抛出异常。此方法可以被派生类重写，参见DAGraphTapas。
 		*/
 		virtual bool handleBackEdge(StarLink* link);
 
-		/** This method is a hook method for DAGraphTapas. It does nothing if it is not overridden.
+		/** 此方法是DAGraphTapas的钩子方法。如果没有被重写，则不执行任何操作。
 		*/
 		virtual void handleExploredLink(StarLink* link) {};
 
-		/** This method always returns true if it is not overridden, see DAGraphTapas for details.
+		/** 此方法总是返回true，除非被重写，参见DAGraphTapas获取细节。
 		*/
 		virtual bool checkPositiveFlow(int linkIndex) {return true;};
 		
@@ -223,15 +203,15 @@ class DAGraph {
 		// to keep track of initialisation of static variables
 		static bool wasInitialised_; 
 		
-		/** @return true if link can improve current bush, false otherwise.
+		/** @return 如果链路可以改进当前bush，则返回true，否则返回false。
 		*/
 		bool worthAdding(StarLink* link);
 
-		/** Adds links from so-called set P2 to the bush. For details see \cite Nie2010.
+		/** 将所谓的P2集合中的链路添加到bush中。详见 Nie2010。
 		*/
 		bool addFromP2();
 		
-		/** @return link index of the link that is NOT yet in the bush.
+		/** @return 返回尚未在bush中的链路的索引。
 			In order to find the first such link starIndex must be set to -1.
 		 */
 		int getNextNotInSet(int startIndex) const;
@@ -241,18 +221,20 @@ class DAGraph {
 		*/
 		bool isReachable(StarLink* link) const;
 		
-		/** This method is used in topological sort. For details see \cite Dasgupta2006.
+		/** 此方法在拓扑排序中使用。详见 Dasgupta2006。
 		*/
 		bool explore(int vertex, bool *visited);
 
-		/** This method is used in topological sort. For details see \cite Dasgupta2006.
+		/** 此方法在拓扑排序中使用。详见 Dasgupta2006。
 		*/
 		inline void preVisit(int vertex);
 
-		/** This method is used in topological sort. For details see \cite Dasgupta2006.
+		/** 此方法在拓扑排序中使用。详见 Dasgupta2006。
 		*/
 		inline void postVisit(int vertex);
 		
+		/** 初始化静态成员
+		*/
 		static void initialiseStaticMembers(StarNetwork *net, ODMatrix *mat, FPType zeroFlow);
 		
 };

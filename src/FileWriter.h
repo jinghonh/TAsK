@@ -1,37 +1,34 @@
-#ifndef FILE_WRITER
+#ifndef FILE_WRITER  // 防止头文件重复包含
 #define FILE_WRITER
 
-#include <fstream>
-#include <string>
+#include <fstream>   // 包含文件流操作的头文件
+#include <string>    // 包含字符串操作的头文件
 
-/** \brief This class simplifies the interface of using operations related to writing
-	information to a file (like a Facade pattern).
+/** \brief 这个类简化了与文件写入操作相关的接口（类似于外观模式）。
 */
 class FileWriter {
 	public:
-		/** @param fileName path to a file. If the file did not exist it will be created.
-			@param append (default value is false) must specify if the file should be appended (true) 
-			or over-written (false). 
+		/** @param fileName 文件路径。如果文件不存在将会被创建。
+			@param append （默认值为false）必须指定文件是追加（true）还是覆盖（false）。
 		*/
-		explicit FileWriter(const std::string& fileName, bool append = false);
-		~FileWriter();
+		explicit FileWriter(const std::string& fileName, bool append = false);  // 显式构造函数
+		~FileWriter();  // 析构函数
 		
-		/** Writes a line to the file. 
-			\note It does NOT add end of line symbol to the line.
+		/** 向文件写入一行。
+			\note 不会自动添加行尾符号。
 		*/
-		void writeLine(const std::string& line);
-		/** Adds an empty line to the file.
+		void writeLine(const std::string& line);  // 写入一行内容
+		/** 向文件添加一个空行。
 		*/
-		void addEmptyLine();
+		void addEmptyLine();  // 添加空行
 		
-		/** @return file name.
+		/** @return 返回文件名。
 		*/
-		std::string getName() const;
+		std::string getName() const;  // 获取文件名
 		
 	private:
-		const std::string name_;
-		std::ofstream file_;
+		const std::string name_;  // 存储文件名
+		std::ofstream file_;      // 文件输出流对象
 };
 
-#endif
-
+#endif  // 结束头文件保护

@@ -3,29 +3,23 @@
 
 #include "IndiffCurve.h"
 
-/** \brief Implemenats convex scalarization function.
-*/
+// 实现凸型无差异曲线的类
 class ConvexIndiffCurve : public IndiffCurve {
 	public:
-
-		/** \note toll1 is always zero.
-			Function is \f$f(toll) = a * toll^{3} + time1\f$ where
-			\f$a = (time2 - time1) / toll2^{3}\f$.
-		**/
+		// 构造函数，toll1始终为0，函数形式为 f(toll) = a * toll^{3} + time1
+		// 其中 a = (time2 - time1) / toll2^{3}
 		ConvexIndiffCurve(FPType time1, FPType time2, TollType toll2);
-		/** If coefficient a and b are already known, then
-			function is \f$f(toll) = a * toll^{3} + b\f$.
-		*/
+		// 构造函数，已知a和b，函数形式为 f(toll) = a * toll^{3} + b
 		ConvexIndiffCurve(FPType a, FPType b);
-		~ConvexIndiffCurve();
+		~ConvexIndiffCurve(); // 析构函数
 
-		virtual FPType evaluate(TollType toll);
+		virtual FPType evaluate(TollType toll); // 计算无差异曲线在toll处的值
 
-		virtual std::string toString();
+		virtual std::string toString(); // 返回曲线参数的字符串表示
 
 	private:
-		FPType a_;
-		FPType b_;
+		FPType a_; // 系数a
+		FPType b_; // 系数b
 
 };
 #endif

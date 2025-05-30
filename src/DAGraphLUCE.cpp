@@ -6,14 +6,14 @@
 #include "StarLink.h"
 
 #include <limits>
-#include <math.h>
+#include <cmath>
 #include <cassert>
 #include <iostream>
 
-LineSearch* DAGraphLUCE::lineSearch_ = NULL;
+LineSearch* DAGraphLUCE::lineSearch_ = nullptr;
 
 DAGraphLUCE::DAGraphLUCE(StarNetwork *net, ODMatrix *mat, FPType zeroFlow, FPType dirTol,
-					int originIndex, 
+					const int originIndex,
 					LineSearch* lineSearch) : DAGraph(net, mat, zeroFlow, originIndex), 
 					nbNodes_(net->getNbNodes()), nbLinks_(net->getNbLinks()), 
 					nodeFlowsInv_(net->getNbNodes(), 0.0), 
@@ -21,9 +21,7 @@ DAGraphLUCE::DAGraphLUCE(StarNetwork *net, ODMatrix *mat, FPType zeroFlow, FPTyp
 	lineSearch_  = lineSearch;
 }; 
 
-DAGraphLUCE::~DAGraphLUCE() {
-
-}; 
+DAGraphLUCE::~DAGraphLUCE() = default; 
 
 bool DAGraphLUCE::moveFlow() {
 	std::vector<FPType> C(nbNodes_, 0.0);
@@ -43,20 +41,20 @@ bool DAGraphLUCE::moveFlow() {
 
 void DAGraphLUCE::computeAvCosts(std::vector<FPType> &C, std::vector<FPType> &G){
 
-	StarLink* link = NULL;
+	const StarLink* link = nullptr;
 	FPType flowPor = 0.0;
 	int linkIndex = -1;
 	int nodeFromIndex = -1;
 	int i = beginAscPass();
-  	i = getNextAscPass(); // skip the origin
+  	i = getNextAscPass(); // 跳过起点
   	for (; i != -1; i = getNextAscPass()){
   		if (nodeFlowsInv_[i] > 0.0) {
   			std::list<StarLink*> inLinks;
   			getInLinks(i, inLinks);
-	      	assert(inLinks.size()); // if node flow is positive, it implies that
+	      	assert(inLinks.size()); // 如果节点流量为正，则意味着存在出向链路！ (原注释有误，应指入向链路或节点有流量来源)
 							      	// there are out-going links!
-	      	for (std::list<StarLink*>::iterator it = inLinks.begin(); it != inLinks.end(); ++it){
-	      		link = *it;
+	      	for (const auto & inLink : inLinks){
+	      		link = inLink;
 	      		linkIndex = link->getIndex();
 	      		nodeFromIndex = link->getNodeFromIndex();
 	      		flowPor = flowPortionsInv_[linkIndex];
@@ -74,7 +72,7 @@ void DAGraphLUCE::computeAvCosts(std::vector<FPType> &C, std::vector<FPType> &G)
 	      	std::list<StarLink*> inLinks;
 
 	      	getInLinks(i, inLinks);
-		    if (inLinks.size() == 0) { //possible only for origin
+		    if (inLinks.empty()) { //可能只对起点成立
 		    	C[i] = 0.0;
 		    	G[i] = 0.0;
 		    } else {
@@ -94,7 +92,7 @@ void DAGraphLUCE::computeAvCosts(std::vector<FPType> &C, std::vector<FPType> &G)
 		    	}
 		    	C[i] = minVal;
 		    	if (sum2 == 0.0) {
-			  		G[i] = 0.0; // TODO: think about this case - zero derivative again
+			  		G[i] = 0.0; // TODO: 仔细考虑这种情况 - 再次出现零导数
 			  	} else {
 			  		G[i] = sum1 / sum2;
 			  	}
@@ -113,7 +111,7 @@ void DAGraphLUCE::computeAvCosts(std::vector<FPType> &C, std::vector<FPType> &G)
 void DAGraphLUCE::computeDirection(std::vector<FPType> &e_links, const std::vector<FPType> &C, 
 									const std::vector<FPType> &G){
 
-	// load demands
+	// 加载需求
 	std::vector<FPType> e_nodes(nbNodes_, 0.0);
 	std::vector<FPType> V(nbNodes_, 0.0);
 	for (int i =  beginAscPass(); i != -1; i = getNextAscPass()) {
@@ -124,23 +122,23 @@ void DAGraphLUCE::computeDirection(std::vector<FPType> &e_links, const std::vect
 	FPType sum1 = 0.0;
 	FPType sum2 = 0.0;
 	FPType tmp = 0.0;
-	StarLink *link = NULL;
+	const StarLink *link = nullptr;
 	int nodeFromIndex = -1;
 	int linkIndex = -1;
 	std::list<StarLink*> inLinks;
-	int originIndex = getOriginIndex();
+	const int originIndex = getOriginIndex();
 	for (int i =  beginDescPass(); i != -1; i = getNextDescPass()) {
-   		if (i != originIndex) { // if it is not an origin
+   		if (i != originIndex) { // 如果不是起点
 	    	inLinks = getInLinksCopy(i);
 	    	if (e_nodes[i] > zeroFlow_) {
-	    		assert(inLinks.size() > 0);		  	
+	    		assert(!inLinks.empty());
 	    		lambda = true;
 
 	    		while (lambda) {
 	    			lambda = false;
 	    			sum1 = 0.0;
 	    			sum2 = 0.0;
-	    			StarLink *link = NULL;
+	    			StarLink *link = nullptr;
 	    			for (std::list<StarLink*>::const_iterator it = inLinks.begin();
 	    					it != inLinks.end(); ++it){
 	    				link = *it;
@@ -148,7 +146,7 @@ void DAGraphLUCE::computeDirection(std::vector<FPType> &e_links, const std::vect
 	    				linkIndex = link->getIndex();
 	    				tmp = link->getDerivative() + G[nodeFromIndex];
 	    				if (fabs(tmp) <= zeroFlow_){ 
-		      				// TODO: think carefully about this case
+		      				// TODO: 仔细考虑这种情况
 	    					tmp = 1.0;
 	    				}
 	    				sum1 += (link->getTime() +  C[nodeFromIndex]) / tmp - e_nodes[i] * 
@@ -161,7 +159,7 @@ void DAGraphLUCE::computeDirection(std::vector<FPType> &e_links, const std::vect
 	    			
 	    			unsigned int count = 0;
 	    			FPType sumDir = 0.0;
-	    			for (std::list<StarLink*>::iterator it = inLinks.begin();
+	    			for (auto it = inLinks.begin();
 	    					it != inLinks.end(); ++it){
 	    				++count;
 	    				
@@ -170,7 +168,7 @@ void DAGraphLUCE::computeDirection(std::vector<FPType> &e_links, const std::vect
 	    				nodeFromIndex = link->getNodeFromIndex();
 	    				tmp = link->getDerivative() + G[nodeFromIndex];
 	    				if (fabs(tmp) <= zeroFlow_){
-		      				// TODO: think carefully about this case
+		      				// TODO: 仔细考虑这种情况
 	    					tmp = 1.0;
 	    				}  
 	    				if (count < inLinks.size()) { 
@@ -178,8 +176,8 @@ void DAGraphLUCE::computeDirection(std::vector<FPType> &e_links, const std::vect
 		    					C[nodeFromIndex])) / tmp + e_nodes[i] * flowPortionsInv_[linkIndex];
 	    					sumDir += e_links[linkIndex];
 	    				} else {
-	    					e_links[linkIndex] = e_nodes[i] - sumDir; // this allows to maintain flow 
-	    					// feasibility. However, direction of descent is not correct and high
+	    					e_links[linkIndex] = e_nodes[i] - sumDir; // 这允许保持流量可行性。
+	    					// 可行性。然而，下降方向不正确，无法达到高精度。
 	    					// precision cannot be achieved
 	    				}	
 
@@ -195,14 +193,14 @@ void DAGraphLUCE::computeDirection(std::vector<FPType> &e_links, const std::vect
 
 	    		}
 
-	    		for (std::list<StarLink*>::iterator it = inLinks.begin(); it != inLinks.end(); ++it){
-	    			link = *it;
+	    		for (const auto & inLink : inLinks){
+	    			link = inLink;
 	    			e_nodes[link->getNodeFromIndex()] += e_links[link->getIndex()];
 	    		}
 	    	} else {
-				// reset to zero
-	    		for (std::list<StarLink*>::iterator it = inLinks.begin(); it != inLinks.end(); ++it){
-	    			link = *it;
+				// 重置为零
+	    		for (const auto & inLink : inLinks){
+	    			link = inLink;
 	    			e_links[link->getIndex()] = 0.0;
 	    		}
     		}	
@@ -217,7 +215,7 @@ FPType DAGraphLUCE::computeStepSize(const std::vector<FPType> &e_links){
 	FPType y[nbLinks_];
 	int indexes[nbLinks_];
 	int size = 0;
-	StarLink *link = NULL;
+	StarLink *link = nullptr;
 	for (int i =  beginAscPass(); i != -1; i = getNextAscPass()) {
 		std::list<StarLink*> outLinks;
 		getOutLinks(i, outLinks);
@@ -238,7 +236,7 @@ FPType DAGraphLUCE::computeStepSize(const std::vector<FPType> &e_links){
 };
 
 void DAGraphLUCE::assignNewFlow(FPType stepSize, const std::vector<FPType> &e_links){
-	StarLink *link = NULL;
+	StarLink *link = nullptr;
 	int linkIndex = -1;
 	FPType dFlow = 0.0;
 	for (int i =  beginAscPass(); i != -1; i = getNextAscPass()) {
@@ -265,14 +263,14 @@ void DAGraphLUCE::assignNewFlow(FPType stepSize, const std::vector<FPType> &e_li
 
 void DAGraphLUCE::prepareData(){
 
-    // set nodeFlows to zero
+    // 将 nodeFlows 设置为零
 	for (int j = 0; j < nbNodes_; ++j){
 		nodeFlowsInv_[j] = 0.0;
 	}
 
-  	// calculating node flows - for current BUSH
+  	// 计算节点流量 - 针对当前BUSH（丛）
 	FPType nodeFlow = 0.0;
-	StarLink* link = NULL;
+	StarLink* link = nullptr;
 	for (int i =  beginDescPass(); i != -1; i = getNextDescPass()) {
 		std::list<StarLink*> inLinks;
 		getInLinks(i, inLinks);
@@ -288,7 +286,7 @@ void DAGraphLUCE::prepareData(){
 
 void DAGraphLUCE::calcFlowPortions(){
 
-	StarLink *link = NULL;
+	const StarLink *link = nullptr;
 	FPType nodeFlow = 0.0;
 	int index = -1;
 	for (int i =  beginDescPass(); i != -1; i = getNextDescPass()) {

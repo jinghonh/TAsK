@@ -9,86 +9,80 @@
 class DAGraphTapas;
 class StarLink;
 
-/** \brief This class represents pair of alternative segments (PAS).
-	\details For details see \cite Hillel2010.
-	\note The definition of what PAS is unused is different from the paper, see isUnused().
+/** \brief 此类表示备选路段对（PAS）。
+	\details 详细信息请参见 \cite Hillel2010。
+	\note PAS未使用的定义与论文中不同，请参见isUnused()。
 */
 class PAS {
 	public:
 		explicit PAS(FPType zeroFlow, FPType dirTol);
 		virtual ~PAS();
 		
-		/** @return true if PAS is unused, false otherwise. 
-			PAS is unused if the flow was not moved or if the entire origin flow from expensive segment 
-			was moved.
-			\note This definition of unused PAS is different from what is written in the paper
-			(according to numerical experiments it works faster - it is better to delete PAS more often).
+		/** @return 如果PAS未使用则返回true，否则返回false。
+			当没有移动流量或昂贵路段的整个起点流量已被移动时，PAS视为未使用。
+			\note 此未使用PAS的定义与论文中的不同
+			（根据数值实验，它运行得更快 - 更频繁地删除PAS更好）。
 		*/
 		bool isUnused();
 		
-		/** This method is used for creation of segments of current PAS. Adds link to the front of
-			cheap cost segment.
+		/** 此方法用于创建当前PAS的路段。将链接添加到廉价成本路段的前端。
 		*/
 		void pushFrontToCheap(StarLink *link);
-		/** This method is used for creation of segments of current PAS. Adds link to the front of
-			expensive cost segment.
+		/** 此方法用于创建当前PAS的路段。将链接添加到昂贵成本路段的前端。
 		*/
 		void pushFrontToExp(StarLink *link);
-		/** This method is used for creation of segments of current PAS. Adds link to the back of
-			cheap cost segment.
+		/** 此方法用于创建当前PAS的路段。将链接添加到廉价成本路段的后端。
 		*/
 		void pushBackToCheap(StarLink *link);
-		/** This method is used for creation of segments of current PAS. Adds link to the back of
-			expensive cost segment.
+		/** 此方法用于创建当前PAS的路段。将链接添加到昂贵成本路段的后端。
 		*/
 		void pushBackToExp(StarLink *link);
 		
-		/** @return last link in the cheap segment. NULL is returned if the segment is empty.
-			This method is used in PASManager for checking if PAS exists already.
+		/** @return 廉价路段中的最后一个链接。如果路段为空，则返回NULL。
+			此方法用于PASManager检查PAS是否已存在。
 		*/
 		StarLink* getLastCheapLink();
-		/** @return last link in the expensive segment. NULL is returned if the segment is empty.
-			This method is used in PASManager for checking if PAS exists already.
+		/** @return 昂贵路段中的最后一个链接。如果路段为空，则返回NULL。
+			此方法用于PASManager检查PAS是否已存在。
 		*/
 		StarLink* getLastExpLink();
 		
 
-		/** Adds bush \b dag to the set of relevant origins of this PAS.
-			If this bush is already in the set,	it won't be added.
-			@return true if origin wad added, false otherwise.
-			\note The pointer to entire bush is stored instead of origin index in order to
-			facilitate access to some information required by PAS.
+		/** 将菊花 \b dag 添加到此PAS的相关起点集合中。
+			如果此菊花已在集合中，则不会添加。
+			@return 如果起点被添加则返回true，否则返回false。
+			\note 存储整个菊花的指针而不是起点索引，以便于访问PAS所需的一些信息。
 		*/
 		bool addOrigin(DAGraphTapas *dag);
 		
-		/** Performs flow move within PAS, updates corresponding link flows and travel times.
-			@return true if flow was actually moved, false otherwise.
+		/** 在PAS内执行流量移动，更新相应的链接流量和旅行时间。
+			@return 如果实际移动了流量则返回true，否则返回false。
 		*/
 		bool moveFlow();
 
-		/** Recalculates costs of cheap and expensive segments and updates corresponding pointer 
-			to cheap segment (after several iterations cheap segment might become an expensive one).
-			@return cost difference of segments
+		/** 重新计算廉价和昂贵路段的成本，并更新指向廉价路段的相应指针
+			（经过多次迭代后，廉价路段可能变成昂贵的）。
+			@return 路段成本差异
 		*/
 		FPType recalcPASCosts();
 		
-		/** Checks if current PAS has flow and is cost effective (for details see \cite Hillel2010).
-			@param cost reduced cost.
-			@param v a specific parameter of TAPAS that is used in order to consider a PAS as flow effective.
-			@param index index of the expensive link of bush under investigation.
-			@param dag pointer to a bush under investigation.  
-			@return true if PAS is effective, false otherwise.
+		/** 检查当前PAS是否有流量且具有成本效益（详情请参见 \cite Hillel2010）。
+			@param cost 降低的成本。
+			@param v TAPAS的特定参数，用于考虑PAS是否具有流量效益。
+			@param index 正在调查的菊花的昂贵链接的索引。
+			@param dag 指向正在调查的菊花的指针。
+			@return 如果PAS有效则返回true，否则返回false。
 		*/
 		bool checkIfEffective(FPType cost, FPType v, int index, DAGraphTapas* dag);
 		
-		/** For debugging. Prints segments on screen. */
+		/** 用于调试。在屏幕上打印路段。 */
 		void print() const;
-		/** @return total number of links belonging to both segments. */
+		/** @return 属于两个路段的链接总数。 */
 		int getNbLinks() const;
-		/** @return total number of origin associated with this PAS.
+		/** @return 与此PAS关联的起点总数。
 		*/
 		int getNbOrigins() const;
-		/** @return cost difference between two segments.
+		/** @return 两个路段之间的成本差异。
 		*/
 		FPType getCostDiff();
 
@@ -97,43 +91,43 @@ class PAS {
 		std::list<StarLink*> segments_[2];
 		FPType cheapCost_;
 		FPType expCost_;
-		FPType totalShift_; /**< minimum possible total shift of flow */
+		FPType totalShift_;
 		int cheapSegm_;
 
-		/** Calculates flow shift that must be performed from expensive segment to cheap one. 
+		/** 计算必须从昂贵路段移动到廉价路段的流量移动。
 		*/
 		virtual FPType getFlowShift();
 		
 	private:
 		
 		typedef std::set<DAGraphTapas*> SetType;
-		SetType relevantOrigins_; /**< set is used in order to have log n complexity on insertion. */
-									/**< Also uniqueness is ensured. */
+		SetType relevantOrigins_;
+									/**< 使用集合以确保插入的对数复杂度。 */
+									/**< 同时确保唯一性。 */
 		static FPType zeroFlow_;
 		static FPType dirTol_;
 		
 		int nbFlowMoves_;
 		
-		/** Calculates minimum possible shifts for each origin and minimum possible total shift.
-			It also calls getFlowShift() and ensures that it does not exceed minimum possible
-			total shift.
+		/** 计算每个起点的最小可能移动和最小可能总移动。
+			它还调用getFlowShift()并确保它不超过最小可能总移动。
 		*/
 		FPType calculateFlowShift();
 
-		/** Calculates cost of a segment given its index.
+		/** 计算给定索引的路段成本。
 		*/
 		FPType calcSegCost(int index);
 		
-		/** Checks if current PAS is cost effective. 
-			@param cost reduced cost.
-			@return true if PAS is cost effective, false otherwise.
+		/** 检查当前PAS是否具有成本效益。
+			@param cost 降低的成本。
+			@return 如果PAS具有成本效益则返回true，否则返回false。
 		*/
 		inline bool checkIfCostEffective(FPType cost) const;
-		/** Checks if current PAS is flow effective.
-			@param v  a specific parameter of TAPAS.
-			@param index index of the expensive link of bush under investigation.
-			@param dag pointer to a bush under investigation.
-			@return true if PAS is flow effective, false otherwise.
+		/** 检查当前PAS是否具有流量效益。
+			@param v TAPAS的特定参数。
+			@param index 正在调查的菊花的昂贵链接的索引。
+			@param dag 指向正在调查的菊花的指针。
+			@return 如果PAS具有流量效益则返回true，否则返回false。
 		*/
 		bool checkIfFlowEffective(FPType v, int index, DAGraphTapas* dag) const;
 		

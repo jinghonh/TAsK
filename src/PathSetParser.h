@@ -1,16 +1,16 @@
 #ifndef PATH_SET_PARSER
 #define PATH_SET_PARSER 
 
-#include <string>
+#include <string>             // 包含字符串库
 
-class PathSet;
-class StarNetwork;
+class PathSet;                // 前向声明路径集合类
+class StarNetwork;            // 前向声明星型网络类
 
 namespace PathSetParser {
-	/** Parser for path sets from a text file and adds them to paths.
-		@param paths PathSet object where all path sets will be added.
-		@param net network.
-		@param fileName path to file with path sets.
+	/** 从文本文件解析路径集合并将它们添加到paths中。
+		@param paths 将添加所有路径集合的PathSet对象。
+		@param net 网络。
+		@param fileName 包含路径集合的文件路径。
 	*/
  	void parse(PathSet& paths, const StarNetwork& net, const std::string& fileName);
 };

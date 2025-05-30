@@ -1,32 +1,31 @@
-#ifndef NEW_BISECTION_
-#define NEW_BISECTION_
+#ifndef NEW_BISECTION_  // 防止头文件重复包含的宏定义开始
+#define NEW_BISECTION_  // 定义宏
 
-#include "LineSearch.h"
+#include "LineSearch.h"  // 包含线搜索基类头文件
 
-class Derivative;
+class Derivative;  // 前向声明导数计算类
 
-/** \brief This class implements bisection for step size calculation. 
+/** \brief 该类实现了用于步长计算的二分法
 */
-class Bisection : public LineSearch {
+class Bisection : public LineSearch {  // 二分法类，继承自线搜索基类
 	
 	public:
 		
 		/** 
-			@param precision precision of bisection.
-			@param der pointer to the object that implements derivative calculation.
+			@param precision 二分法的精度
+			@param der 指向实现导数计算对象的指针
 		*/
-		Bisection(FPType precision, Derivative *der);
-		~Bisection();
+		Bisection(FPType precision, Derivative *der);  // 构造函数
+		~Bisection();  // 析构函数
 	
-		FPType execute(FPType a, FPType b);
+		FPType execute(FPType a, FPType b);  // 执行二分法计算的方法
 
-		/** @return precision of bisection.
+		/** @return 返回二分法的精度
 		*/
-		FPType getPrecision() const;
+		FPType getPrecision() const;  // 获取精度的方法
 	
 	private:
-		const FPType precision_;
+		const FPType precision_;  // 存储二分法精度的常量成员变量
 };
 
-#endif
-
+#endif  // 防止头文件重复包含的宏定义结束

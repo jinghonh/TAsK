@@ -1,61 +1,56 @@
-#ifndef LABEL_CORR_AL
+#ifndef LABEL_CORR_AL  // 防止头文件重复包含
 #define LABEL_CORR_AL
 
-#include "ShortestPath.h"
+#include "ShortestPath.h"  // 包含最短路径基类
 
-class StarNetwork;
-class StarNode;
+class StarNetwork;  // 前向声明星形网络类
+class StarNode;     // 前向声明星形节点类
 
-/** \brief This class implements the label correcting algorithm for finding shortest paths from 
-    a given origin node to all other nodes of the network. 
-	\note Algorithm implements a special feature for traffic assignment:
-		shortest paths are not allowed to go through zone nodes.
- 	\details For details see \cite Sheffi1985. 
+/** \brief 该类实现了标签修正算法，用于寻找从给定起点到网络中所有其他节点的最短路径。
+    \note 算法实现了交通分配的特殊功能：
+        最短路径不允许经过区域节点。
+    \details 详细信息请参见 \cite Sheffi1985。
  */
-class LabelCorrectingAl : public ShortestPath {
+class LabelCorrectingAl : public ShortestPath {  // 继承自最短路径基类
 	
 	public:
-		LabelCorrectingAl(StarNetwork *netPointer);
-		~LabelCorrectingAl();
+		LabelCorrectingAl(StarNetwork *netPointer);  // 构造函数
+		~LabelCorrectingAl();  // 析构函数
 		
-		/** Calculates shortest paths from originIndex to all other nodes 
-			of the network.
+		/** 计算从originIndex到网络中所有其他节点的最短路径。
 		*/
-		virtual void calculate(int originIndex);
+		virtual void calculate(int originIndex);  // 计算最短路径的虚函数
 		
-		/** @return cost of shortest path from the given origin to destIndex.
+		/** @return 从给定起点到destIndex的最短路径成本。
 		*/
-		virtual FPType getCost(int destIndex) const;
-		/** @return pointer to a link that belongs to the shortest path 
-				from a given origin to destIndex and points to destIndex.
+		virtual FPType getCost(int destIndex) const;  // 获取路径成本的虚函数
+		/** @return 指向属于从给定起点到destIndex的最短路径且指向destIndex的链路的指针。
 		*/
-		virtual StarLink* getInComeLink(int destIndex) const;
+		virtual StarLink* getInComeLink(int destIndex) const;  // 获取入边链路的虚函数
 		
-		/** @return index of the origin for which the shortest paths were
-				calculated most recently.
+		/** @return 最近计算最短路径的起点索引。
 		*/
-		int getCurrentOrigin() const;
+		int getCurrentOrigin() const;  // 获取当前起点的函数
 
 	protected:
-		/** Special condition that forbids shortest paths to go through zones.
-			@return true if it is allowed to visit curNode.
+		/** 禁止最短路径经过区域的特殊条件。
+			@return 如果允许访问curNode则返回true。
 		*/
-		virtual bool proceed(StarNode* curNode, int topNode) const;
+		virtual bool proceed(StarNode* curNode, int topNode) const;  // 判断是否继续的虚函数
 	
 	private:
-
-		/** Internal utility structure that is usually used to store solution of the shortest path problem.
-			Since it is used only in this class definition of this structure is directly in this header.
+		/** 内部工具结构，通常用于存储最短路径问题的解。
+			由于它仅在此类中使用，因此该结构的定义直接在此头文件中。
  		*/
-		struct nodeInfo {
-			FPType dist; /**< current shortest distance to node*/
-			int linkIndex; 
+		struct nodeInfo {  // 节点信息结构体
+			FPType dist; /**< 到节点的当前最短距离*/
+			int linkIndex;  // 链路索引
 		};
 		
-		StarNetwork *netPointer_;
-		nodeInfo *nodeList_;
-		const int nbNodes_;
-		int originIndex_;
+		StarNetwork *netPointer_;  // 网络指针
+		nodeInfo *nodeList_;       // 节点信息列表
+		const int nbNodes_;        // 节点数量
+		int originIndex_;          // 起点索引
 		
 };
 

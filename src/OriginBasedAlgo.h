@@ -7,33 +7,32 @@ class OriginSet;
 class StarNetwork;
 class OriginBush;
 
-/** \brief This class implements main steps of the framework for origin-based algorithms.
+/** \brief 此类实现了基于起点算法框架的主要步骤。
 */
 class OriginBasedAlgo : public EqAlgo {
 	public:
-		/** @param originSet pointer to object that stores all bushes.
-			@param net network.
-			@param component pointer to object that performs extra operation with convergence data.
-			@param conv convergence measure.
-			@param timeLimit maximum allowed computational time.
+		/** @param originSet 指向存储所有菊花的对象的指针。
+			@param net 网络。
+			@param component 指向执行收敛数据额外操作的对象的指针。
+			@param conv 收敛度量。
+			@param timeLimit 允许的最大计算时间。
 		*/
 		OriginBasedAlgo(OriginSet *originSet, StarNetwork *net, AddHook *component, 
 						ConvMeasure* conv, FPType timeLimit);
 		virtual ~OriginBasedAlgo();
 		
 	protected:
-		/** This is a hook method that does nothing by default. It is executed after each iteration.
-			It is re-implemented in OriginBasedAlgoTapas.
+		/** 这是一个默认情况下不执行任何操作的钩子方法。它在每次迭代后执行。
+			它在OriginBasedAlgoTapas中被重新实现。
 		*/
-		virtual void doSmthAfterOrigins(){}; 
+		virtual void doSmthAfterOrigins(){};
 
-		/** Performs main operations made during one iteration for a given origin.
-			It implements equilibration I. Equilibration II over-rides this method.
-			For details see OriginBasedAlgoEQII.
-			@return true if current bush was equilibrated, false otherwise. The return value is needed
-			only for equilibration II.
+		/** 为给定起点执行一次迭代中的主要操作。
+			它实现平衡I。平衡II重写此方法。
+			详细信息请参见OriginBasedAlgoEQII。
+			@return 如果当前菊花已平衡则返回true，否则返回false。返回值仅对平衡II有用。
 		*/
-		virtual bool mainLoop(OriginBush *bush); 
+		virtual bool mainLoop(OriginBush *bush);
 		
 	private:
 		OriginSet *originSet_;

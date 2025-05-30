@@ -5,21 +5,21 @@
 
 class Derivative;
 
-/** \brief This class implements Armijo-like rule to calculate the step size.
+/** \brief 这个类实现了Armijo-like规则来计算步长。
 */
 class Armijo : public LineSearch {
 	
 	public:
 		/** 
-			@param decrement the factor by which the step size will be decreased at each iteration.
-			@param der object that implements derivative calculation.
+			@param decrement 每次迭代时步长减小的因子。
+			@param der 实现导数计算的对象。
 		*/	
 		Armijo(FPType decrement, Derivative* der);
 		~Armijo();
 		
 		FPType execute(FPType a, FPType b);
 	
-		/** @return the factor by which the step size is decreased.
+		/** @return 步长减小的因子。
 		*/
 		FPType getDecriment() const;
 	

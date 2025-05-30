@@ -20,69 +20,66 @@ struct Coords {
 	int y;
 } ;
 
-/** \brief This namespace defines various useful functions.
+/** \brief 这个命名空间定义了各种有用的函数。
 */
 namespace Utils {
 
-	/** Finds all disjoint links of paths \b path1 and \b path2 and writes them into
-		list \b list.
+	/** 查找路径 \b path1 和 \b path2 的所有不相交链接，并将它们写入
+		链表 \b list。
 	*/
 	void getDisjointLinks(Path *path1, Path *path2, std::list<StarLink*> &list, int nbLinks);
 
-	/** Finds all common links of paths specified in \b paths and writes them into
-		list \b list.
+	/** 查找在 \b paths 中指定的路径的所有共同链接，并将它们写入
+		链表 \b list。
 	*/
 	void getCommonLinks(PathBasedFlowMove *paths, std::list<StarLink*> &list, int nbLinks);
 
-	/** Checks if network flow constraints are satisfied at each node of the 
-		graph.
-		@return maximum link flow deviation.
+	/** 检查网络流约束是否在图的每个节点上都得到满足。
+		@return 最大链接流偏差。
 	*/
 	FPType checkFeasibility(StarNetwork *net, ODMatrix *mat);
 
-	/** Parses string \b line and returns Spiess link cost functions parameters into 
-		SpiessFncCreator \b spCreator.
-		@return id of generated Spiess function.
+	/** 解析字符串 \b line 并将Spiess链接成本函数参数返回到
+		SpiessFncCreator \b spCreator。
+		@return 生成的Spiess函数的ID。
 	*/
 	int parseSpiessFnc(const std::string& input, SpiessFncCreator &spCreator, bool constFnc = false);
 	
-	/** Calculates derivative w.r.t. flow shift between two paths \b path 
-		and \b minPath.
+	/** 计算关于两条路径 \b path 和 \b minPath 之间流量转移的导数。
 	*/
 	FPType calculatePathDerivative(Path *path, Path *minPath, int nbLinks);
 	
-	/** Same as calculatePathDerivative() but disjoint links are already known and stored 
-		in list \b list.
+	/** 与calculatePathDerivative()相同，但不相交链接已知并存储在
+		链表 \b list 中。
 	*/
 	FPType calculatePathDerivativeForDisjoint(const std::list<StarLink*> &list);
 	
-	/** Same as calculatePathDerivative() but disjoint links are already known and stored 
-		in two lists \b list1 and \b list2.
+	/** 与calculatePathDerivative()相同，但不相交链接已知并存储在
+		两个链表 \b list1 和 \b list2 中。
 	*/
 	FPType calculatePathDerivativeForDisjoint(const std::list<StarLink*> &list1,
 											  const std::list<StarLink*> &list2);
 
-	/** Reads coordinates from file art3NodesFile and writes them into list newCoords.
+	/** 从文件art3NodesFile读取坐标并将它们写入链表newCoords。
 	*/
 	void readART3Coordinates(const std::string& art3NodesFile, std::list<Coords>& newCoords);
 
-	/** Copies coordinates from coords to newCoords for nodes that are present in net.
+	/** 将坐标从coords复制到newCoords，用于在net中存在的节点。
 	*/
 	void mapCoordsFromART3(const std::list<Coords>& coords, StarNetwork* net,
 						   std::list<Coords>& newCoords);
-	/** Writes coordinates to file fileName.
+	/** 将坐标写入文件fileName。
 	*/
 	void writeCoordsToFile(const std::list<Coords>& coords, const std::string& fileName);
-	/** Very simple implementation to tokenize string. It relies on stringstream ability to
-		tokenize string.
+	/** 非常简单的字符串分词实现。它依赖于stringstream分词字符串的能力。
 	*/
 	void tokenizeIntoStr(const std::string& lineToTokenize, std::string* result, int nbTokens);
-	/** @return Coords object with filled attributes if nodeID is present in coords,
-			if not present all attributes are set to -1.
+	/** @return 如果nodeID存在于coords中，则返回具有填充属性的Coords对象，
+			如果不存在，则所有属性设置为-1。
 	*/
 	Coords findCoords(const std::list<Coords>& coords, int nodeID);
 
-	/** @return random floating point number in interval [0, maxVal].
+	/** @return 在区间[0, maxVal]中的随机浮点数。
 	*/
 	FPType generateRndNumber(FPType maxVal);
 

@@ -1,35 +1,28 @@
-#ifndef CURRENT_PATHS_ADDER
-#define CURRENT_PATHS_ADDER 
+#ifndef CURRENT_PATHS_ADDER // 防止头文件重复包含
+#define CURRENT_PATHS_ADDER // 定义头文件宏
 
-#include "PathsAdder.h"
-#include "UsedTypes.h"
+#include "PathsAdder.h" // 包含 PathsAdder 类的头文件
+#include "UsedTypes.h" // 包含自定义类型定义
 
-class PathSet;
+class PathSet; // PathSet 类的声明
 
-/** \brief Implements addition of known paths techniques for the case
-	of adding all paths from the set of paths.
-*/
-class CurrentPathsAdder : public PathsAdder {
+// 实现已知路径添加技术的类，适用于添加所有正流量路径
+class CurrentPathsAdder : public PathsAdder { // CurrentPathsAdder 类定义，继承自 PathsAdder
 	public:
-		/** @param tolls tolls container.
-		*/
+		// 构造函数，tolls为收费容器
 		CurrentPathsAdder(const TollContainerType& tolls);
-		~CurrentPathsAdder();
+		~CurrentPathsAdder(); // 析构函数
 
-		/** Stores a pointer to the set of all paths with positive flow.
-			\note Must be called once after object creation.
-			Cannot be called in the constructor because PathSet object uses
-			this class indirectly trough other classes.
-		*/
+		// 存储所有正流量路径的路径集指针
+		// 注意：对象创建后需调用一次，不能在构造函数中调用，因为PathSet间接依赖本类
 		void setPathSet(PathSet* paths);
 
-		/** Adds labels corresponding to known paths to the destination node destIndex.
-		*/
+		// 向目标节点destIndex添加所有已知路径的标签
 		virtual void uploadPaths(int odIndex, int destIndex, BiObjLabelContainer& labels) const;
 
 	protected:
-		PathSet* paths_;
-		const TollContainerType& tolls_;
+		PathSet* paths_; // 路径集指针
+		const TollContainerType& tolls_; // 收费容器引用
 
-};
-#endif
+}; // 类定义结束
+#endif // CURRENT_PATHS_ADDER

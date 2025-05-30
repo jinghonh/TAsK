@@ -1,33 +1,32 @@
-#ifndef LINK_FLOWS_CFW
+#ifndef LINK_FLOWS_CFW  // 防止头文件重复包含
 #define LINK_FLOWS_CFW
 
-#include "LinkFlows.h"
+#include "LinkFlows.h"  // 包含基类头文件
 
-/** \brief This class implements conjugate Frank-Wolf algorithm.
-	\details For details see \cite Mitradjieva2012.
-	\warning This algorithm shows problems with convergence when precision is high.
-	Also for some reason it does not converge when Armijo step is used with decrement 2
-	on Barcelona instance.
+/** \brief 该类实现了共轭Frank-Wolf算法
+	\details 详细信息请参见 \cite Mitradjieva2012
+	\warning 当精度较高时，该算法会出现收敛问题。
+	此外，当在巴塞罗那实例上使用递减因子为2的Armijo步长时，算法无法收敛。
 */
-class LinkFlowsCFW : public LinkFlows {
+class LinkFlowsCFW : public LinkFlows {  // 定义LinkFlowsCFW类，继承自LinkFlows
 	
 	public:
+		// 构造函数，接收网络、OD矩阵、最短路径、线搜索、零流量阈值和标签修正算法参数
 		LinkFlowsCFW(StarNetwork *net, ODMatrix *mat, ShortestPath *shPath, LineSearch* lineSearch, 
 			FPType zeroFlow, LabelCorrectingAl* LCShPath);
-		virtual ~LinkFlowsCFW();
+		virtual ~LinkFlowsCFW();  // 虚析构函数
 		
 	protected:
 		
-		FPType *linkFlowsCFW_; /**< CFW link flows. */
-		int nbCalls_; /**< number of calculations of direction of descent,
-							it is needed for initial iteration.*/
+		FPType *linkFlowsCFW_; /**< CFW链路流数组 */
+		int nbCalls_; /**< 下降方向计算的次数，用于初始迭代 */
 		
-		virtual void calculateDirection();
+		virtual void calculateDirection();  // 计算下降方向的虚函数
 		
 	private:
-		/** This method calculates a specific parameter of CFW, see \cite Mitradjieva2012.
+		/** 该方法计算CFW算法的特定参数，详见 \cite Mitradjieva2012
 		*/
-		FPType calculateAlpha();
+		FPType calculateAlpha();  // 计算alpha参数的函数
 };
 
-#endif
+#endif  // 结束头文件保护

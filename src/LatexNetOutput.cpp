@@ -1,3 +1,4 @@
+// 包含必要的头文件
 #include "LatexNetOutput.h"
 #include "FileWriter.h"
 #include "StarNetwork.h"
@@ -8,68 +9,81 @@
 #include <math.h>
 #include <iostream>
 
+// 定义坐标容差值
 #define COORD_TOL 1e-2
 
+// 构造函数1：初始化网络输出对象
 LatexNetOutput::LatexNetOutput(StarNetwork* net) : NetOutput(net) {
 	setPlotInfoToDefault();
 };
 
+// 构造函数2：初始化网络输出对象，包含缺失ID的日志文件
 LatexNetOutput::LatexNetOutput(StarNetwork* net, const std::string& logFileForMissingIDs) : 
 			NetOutput(net, logFileForMissingIDs) {
 	setPlotInfoToDefault();
 };
 
+// 析构函数
 LatexNetOutput::~LatexNetOutput(){
 
 };
 
+// 设置默认的绘图信息
 void LatexNetOutput::setPlotInfoToDefault(){
-	snInfo_.side1 = "south";
-	snInfo_.side2 = "north";
-	snInfo_.shift = "xshift";
+	snInfo_.side1 = "south";  // 设置南北方向的第一个边
+	snInfo_.side2 = "north";  // 设置南北方向的第二个边
+	snInfo_.shift = "xshift"; // 设置南北方向的偏移类型
 
-	weInfo_.side1 = "west";
-	weInfo_.side2 = "east";
-	weInfo_.shift = "yshift";
+	weInfo_.side1 = "west";   // 设置东西方向的第一个边
+	weInfo_.side2 = "east";   // 设置东西方向的第二个边
+	weInfo_.shift = "yshift"; // 设置东西方向的偏移类型
 };
 
+// 将网络输出为LaTeX格式
 void LatexNetOutput::printToLaTeX(const std::string& fileWithNodes, const std::string& texFile, 
 		bool addHeader, FPType scale) { 
-	FileWriter outputFile(texFile);
+	FileWriter outputFile(texFile);  // 创建输出文件对象
 	std::cout << "file name: " << texFile << std::endl;
 	
+	// 如果需要添加LaTeX文档头
 	if (addHeader) {
 		outputFile.writeLine("\\documentclass[a4paper]{article} \n");
 		outputFile.writeLine("\\usepackage{a4wide} \n");
 		outputFile.writeLine("\\usepackage{tikz} \n \\usetikzlibrary{calc} \n");
 		outputFile.writeLine("\\begin{document} \n");
 	}
+	// 创建tikz图形环境
 	std::stringstream ss;
 	ss << " \\begin{tikzpicture}[scale=" << scale << "] \n";
 	outputFile.writeLine(ss.str());
 	
+	// 获取节点数量并初始化坐标数组
 	int nbNodes = net_->getNbNodes();
 	std::vector<FPType> xCoord(nbNodes, 0);
 	std::vector<FPType> yCoord(nbNodes, 0);
-	
 	std::vector<int> nodeID(nbNodes, 0);
 	
+	// 读取节点坐标
 	readCoord(fileWithNodes, xCoord, yCoord, nodeID);
 
+	// 添加TikZ节点
 	addTikzNodes(outputFile, xCoord, yCoord, nodeID);
 
+	// 获取流量信息
 	FlowInfo flowInfo = getFlowInfo();
 	
+	// 遍历所有节点和链接
 	for (StarNode* node = net_->beginNode(); node != NULL; node = net_->getNextNode()){
 		for (StarLink* link = net_->beginLink(); link != NULL; link = net_->getNextLink()) {
 			
-			if (plotLink(link)) {
-				int tail = node->getIndex();
-				int head = link->getNodeToIndex();
-				std::string lineOptions = generateLineOptions(flowInfo, link);
+			if (plotLink(link)) {  // 如果链接需要绘制
+				int tail = node->getIndex();  // 获取起始节点索引
+				int head = link->getNodeToIndex();  // 获取目标节点索引
+				std::string lineOptions = generateLineOptions(flowInfo, link);  // 生成线条选项
 				
 				std::string oneLine("");
 				setPlotInfoToDefault();
+				// 根据链接方向选择绘制方法
 				if (onHorizontalLine(tail, head, yCoord)) {
 					oneLine = drawHorizontalLink(link, lineOptions, (xCoord[tail] < xCoord[head]));
 				} else if (onVerticalLine(tail, head, xCoord)) {
@@ -79,50 +93,55 @@ void LatexNetOutput::printToLaTeX(const std::string& fileWithNodes, const std::s
 						(yCoord[tail] < yCoord[head]));
 				}
 				if (!oneLine.empty()) outputFile.writeLine(oneLine);
-
 			}
-		
 		} 
 	}	
 	
-	
+	// 结束tikz图形环境
 	outputFile.writeLine(" \\end{tikzpicture} \n \n");
 	
+	// 如果需要，添加文档结束标记
 	if (addHeader) outputFile.writeLine("\\end{document} \n");
-	
 };
 
+// 判断是否需要绘制链接
 bool LatexNetOutput::plotLink(StarLink* link) const {
 	return link->getFlow() > 0.0;
 };
 
+// 添加TikZ节点
 void LatexNetOutput::addTikzNodes(FileWriter& outputFile, const std::vector<FPType>& xCoord, 
 				const std::vector<FPType>& yCoord, const std::vector<int>& nodeID){
 	int nbNodes = net_->getNbNodes();
 	for (int i = 0; i < nbNodes; ++i) {
-		if (xCoord[i] != -1 && yCoord[i] != -1) {
+		if (xCoord[i] != -1 && yCoord[i] != -1) {  // 如果节点坐标有效
 			std::stringstream tmpss;
+			// 创建节点绘制命令
 			tmpss << "\\node[draw,thick,circle,black,minimum size=0.75cm] (n" << nodeID[i] << ") at (" << xCoord[i] << "," 
-				<< yCoord[i] << ") {" << getNodeLabel(nodeID[i]) << "}; \n"; //
+				<< yCoord[i] << ") {" << getNodeLabel(nodeID[i]) << "}; \n";
 			outputFile.writeLine(tmpss.str());
 		}
 	}
 };
 
+// 获取节点标签
 std::string LatexNetOutput::getNodeLabel(int nodeID) const {
 	std::stringstream ss;
 	ss << nodeID;
 	return ss.str();
 };
 
+// 判断是否在水平线上
 bool LatexNetOutput::onHorizontalLine(int tail, int head, const std::vector<FPType>& yCoord){
 	return (fabs(yCoord[tail] - yCoord[head]) <= COORD_TOL); 
 };
 
+// 判断是否在垂直线上
 bool LatexNetOutput::onVerticalLine(int tail, int head, const std::vector<FPType>& xCoord){
 	return (fabs(xCoord[tail] - xCoord[head]) <= COORD_TOL); 
 };
 
+// 获取线条标签
 std::string LatexNetOutput::getLineLabel(StarLink* link, const std::string& aboveOrBelow){
 	std::stringstream ss;
 	ss << "-- node[sloped," + aboveOrBelow + "] {" <<  
@@ -130,14 +149,16 @@ std::string LatexNetOutput::getLineLabel(StarLink* link, const std::string& abov
 	return ss.str();
 };
 
+// 绘制水平链接
 std::string LatexNetOutput::drawHorizontalLink(StarLink* link, const std::string& lineOptions, 
 		bool tailIsLeft){
 	
-	int tailShiftVal = getShift(weInfo_, tailIsLeft);
+	int tailShiftVal = getShift(weInfo_, tailIsLeft);  // 获取偏移值
 	std::string tailShift = createShiftStr(weInfo_.shift, tailShiftVal);	
 	std::stringstream ss;
 	std::string aboveOrBelow("below");
 	if (tailIsLeft) aboveOrBelow = "above";
+	// 生成水平链接的绘制命令
 	ss << "\\draw[" << lineOptions <<"] ([" << tailShift << "]n" << link->getNodeFrom() 
 					<<	"." << weInfo_.side1 << ") " << getLineLabel(link, aboveOrBelow) << 
 					" ([" << tailShift << "]n" << 
@@ -145,19 +166,21 @@ std::string LatexNetOutput::drawHorizontalLink(StarLink* link, const std::string
 	return ss.str();
 };
 
- std::string LatexNetOutput::drawVerticalLink(StarLink* link, const std::string& lineOptions, 
- 		bool tailIsUp){
- 	int headShiftVal = getShift(snInfo_, tailIsUp);
- 	std::string headShift = createShiftStr(snInfo_.shift, headShiftVal);
- 	std::stringstream ss;
- 	ss << "\\draw[" << lineOptions <<"] ([" << headShift << "]n" << link->getNodeFrom() 
+// 绘制垂直链接
+std::string LatexNetOutput::drawVerticalLink(StarLink* link, const std::string& lineOptions, 
+		bool tailIsUp){
+	int headShiftVal = getShift(snInfo_, tailIsUp);  // 获取偏移值
+	std::string headShift = createShiftStr(snInfo_.shift, headShiftVal);
+	std::stringstream ss;
+	// 生成垂直链接的绘制命令
+	ss << "\\draw[" << lineOptions <<"] ([" << headShift << "]n" << link->getNodeFrom() 
 					<<	"." << snInfo_.side1 << ") " << getLineLabel(link, "above") << " ([" << headShift << "]n" << 
 					link->getNodeTo() << "." << snInfo_.side2 << "); \n";
 	return ss.str();
- };
+};
 
- std::string LatexNetOutput::drawDiagonalLink(StarLink* link, const std::string& lineOptions, 
- 		bool tailIsLeft, bool tailIsUp){
+ std::string LatexNetOutput::drawDiagonalLink(StarLink* link, const std::string& lineOptions,
+ 		const bool tailIsLeft, bool tailIsUp){
  	int tailShiftVal = getShift(weInfo_, tailIsLeft);
 	std::string tailShift = createShiftStr(weInfo_.shift, tailShiftVal);
 	int headShiftVal = getShift(snInfo_, tailIsUp);

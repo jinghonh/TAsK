@@ -1,49 +1,52 @@
-#ifndef BI_OBJ_LABEL
+#ifndef BI_OBJ_LABEL  // 防止头文件重复包含
 #define BI_OBJ_LABEL
 
-#include "UsedTypes.h"
+#include "UsedTypes.h"  // 包含自定义类型定义
 
-#include <string>
+#include <string>  // 包含字符串类
 
-class StarLink;
+class StarLink;  // 前向声明StarLink类
 
-/** \brief Implements bi-objective label.
+/** \brief 实现双目标标签类。
 
-	Each label contains travel time, toll, node index
-	where this label belongs to, link that points to this label,
-	label from which current label is generated.
+    每个标签包含:
+    - 旅行时间
+    - 通行费
+    - 所属节点索引
+    - 指向该标签的链接
+    - 生成当前标签的前一个标签
 */
 class BiObjLabel {
-	public:
-		/**
-			@param time travel time.
-			@param toll travel toll.
-			@param owner node index where current label belongs to.
-			@param prevLabel label from which current label is generated.
-			@param prevLink link that points to this label.
-		*/
-		BiObjLabel(FPType time, TollType toll, int owner, BiObjLabel* prevLabel, StarLink* prevLink);
-		~BiObjLabel();
+    public:
+        /**
+            @param time 旅行时间
+            @param toll 通行费
+            @param owner 标签所属的节点索引
+            @param prevLabel 生成当前标签的前一个标签
+            @param prevLink 指向该标签的链接
+        */
+        BiObjLabel(FPType time, TollType toll, int owner, BiObjLabel* prevLabel, StarLink* prevLink);  // 构造函数
+        ~BiObjLabel();  // 析构函数
 
-		FPType getTime() const;
+        FPType getTime() const;  // 获取旅行时间
 
-		TollType getToll() const;
+        TollType getToll() const;  // 获取通行费
 
-		BiObjLabel* getPrevLabel() const;
-		int getOwner() const;
+        BiObjLabel* getPrevLabel() const;  // 获取前一个标签
+        int getOwner() const;  // 获取所属节点索引
 
-		StarLink* getPrevLink() const;
+        StarLink* getPrevLink() const;  // 获取前一个链接
 
-		std::string toString() const;
+        std::string toString() const;  // 转换为字符串表示
 
-		void setTime(FPType timeVal);
+        void setTime(FPType timeVal);  // 设置旅行时间
 
-	private:
-		FPType time_;
-		const TollType toll_;
-		const int owner_;
-		BiObjLabel* prevLabel_;
-		StarLink* prevLink_;
+    private:
+        FPType time_;  // 旅行时间
+        const TollType toll_;  // 通行费(常量)
+        const int owner_;  // 所属节点索引(常量)
+        BiObjLabel* prevLabel_;  // 前一个标签指针
+        StarLink* prevLink_;  // 前一个链接指针
 };
 
 #endif

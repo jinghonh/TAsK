@@ -6,16 +6,16 @@
 class LineSearch;
 class DescDirection;
 
-/** \brief This class is used in path-based algorithms that use a line search in order to
-	calculate a step size. This class provides interface for step size calculation.
+/** \brief 此类用于在基于路径的算法中，这些算法使用线搜索来计算步长。
+	该类提供了步长计算的接口。
 */
 class StepSize {
 	public:
 		
 		virtual ~StepSize();
 		
-		/** This method returns a calculated step size given a DescDirection object 
-			that provides access to the data necessary for a line search.
+		/** 此方法返回计算出的步长，给定一个DescDirection对象，
+			该对象提供访问线搜索所需数据的接口。
 		*/
 		FPType getStepSize(DescDirection *algo);
 		
@@ -25,7 +25,7 @@ class StepSize {
 
 		StepSize(LineSearch *lineSearch);
 
-		/** This method initialises derivative used in line search.
+		/** 此方法初始化线搜索中使用的导数。
 		*/
 		virtual void initialiseDerivative(DescDirection *algo) = 0;
 };

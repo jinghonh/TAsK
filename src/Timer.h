@@ -1,33 +1,31 @@
 #ifndef TIMER_
 #define TIMER_
 
-#include "UsedTypes.h"
+#include "UsedTypes.h" // 包含自定义类型定义
 
-#include <ctime>
+#include <ctime> // 包含C时间库
 
-/** \brief This class represents a timer for measuring CPU time.
+/** \brief 这个类表示一个用于测量CPU时间的计时器。
 
-	This class simplifies the way to measure elapsed time.
+    这个类简化了测量经过时间的方法。
 */
 class Timer {
 	public:
-		Timer();
-		~Timer();
+		Timer(); // 构造函数
+		~Timer(); // 析构函数
 		
-		/** Launches the timer. It can be called as many times as needed
-			in order to restart the timer. If this method has never been called starting point 
-			of time will be creation of Timer object.
+		/** 启动计时器。可以根据需要多次调用以重启计时器。
+            如果从未调用此方法，则计时起点将是Timer对象的创建时间。
 		*/
-		void start();
+		void start(); // 开始/重启计时器
 		
-		/** @return how much time has passed (in seconds) since either object creation 
-			or last call to start() method.
+		/** @return 返回自对象创建或上次调用start()方法以来经过的时间（以秒为单位）。
 		*/
-		FPType getTimePassed() const;
+		FPType getTimePassed() const; // 获取经过的时间（秒）
 		
 	private:
-		clock_t start_;
+		clock_t start_; // 存储开始时间点
 		
 };
 
-#endif
+#endif // TIMER_头文件结束

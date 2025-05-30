@@ -3,35 +3,32 @@
 
 #include "LinkFnc.h"
 
-/** \brief This class is a basic element of StarNetwork. It represents a link of the graph.
+/** \brief 这个类是StarNetwork的基本元素。它表示图中的一个链接。
 */
 class StarLink {
 	public:
-		/** @param nodeFrom node ID where link comes from.
-			@param nodeTo node ID where link points to.
-			@param fnc link cost function.
+		/** @param nodeFrom 链接起始节点的ID。
+			@param nodeTo 链接指向节点的ID。
+			@param fnc 链接成本函数。
 		*/
 		StarLink(int nodeFrom, int nodeTo, LinkFnc *fnc);
 		virtual ~StarLink();
 		
-		/** @return ID (ID is obtained from a file with network data) of a node
-				where this link comes from.
+		/** @return 链接起始节点的ID（ID来自网络数据文件）。
 		*/
 		int getNodeFrom() const;
 		
-		/** @return ID (ID is obtained from a file with network data) of a node
-				where this link leads to.
+		/** @return 链接指向节点的ID（ID来自网络数据文件）。
 		*/
 		int getNodeTo() const;
 		
-		/** @return current travel time of this link.
-			\note It is not automatically updated when flow changes
-				(motivation for this is the fact that some of the algorithms now better
-				when to update travel time).
+		/** @return 链接的当前行程时间。
+			\note 当流量改变时，它不会自动更新
+				（这样做的原因是某些算法知道何时更新行程时间）。
 		*/
 		virtual FPType getTime() const;
 
-		/** @return this pointer unless overridden by derived classes.
+		/** @return 除非被派生类覆盖，否则返回this指针。
 		*/
 		virtual StarLink* getForwardLink();
 

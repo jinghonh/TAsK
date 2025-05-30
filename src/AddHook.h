@@ -3,10 +3,9 @@
 
 #include "UsedTypes.h"
 
-/** \brief A base class that is used in EqAlgo class to perform some operations with 
-	convergence information available after each iteration of the algorithm. 
-	\details Usually such operations include screen or file output. This class does nothing.
-	Specific operations are implemented in derived classes.
+/** \brief 这是一个基类，用于在EqAlgo类中执行一些操作，这些操作可以使用算法每次迭代后获得的收敛信息。
+	\details 通常这些操作包括屏幕或文件输出。这个类本身不执行任何操作。
+	具体的操作在派生类中实现。
  */
 class AddHook {
 	public:
@@ -14,7 +13,7 @@ class AddHook {
 		AddHook(){};
 		virtual ~AddHook(){};
 		
-		/** This method does nothing. */
+		/** 此方法不执行任何操作。 */
 		virtual void produceOut(FPType timePassed, FPType gap) {};
 		
 };

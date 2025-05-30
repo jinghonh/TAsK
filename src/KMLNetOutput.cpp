@@ -1,68 +1,85 @@
+// 包含必要的头文件
 #include "KMLNetOutput.h"
 #include "StarNetwork.h"
 #include "FileWriter.h"
 #include "StarLink.h"
 
-#include <iomanip>
-#include <sstream>
-#include <iostream>
+#include <iomanip>  // 用于格式化输出
+#include <sstream>  // 用于字符串流处理
+#include <iostream> // 用于标准输入输出
 
+// 构造函数，初始化网络
 KMLNetOutput::KMLNetOutput(StarNetwork* net) : NetOutput(net) {
 
 };
 
+// 带日志文件的构造函数
 KMLNetOutput::KMLNetOutput(StarNetwork* net, const std::string& logFileForMissingIDs) : 
 			NetOutput(net, logFileForMissingIDs) {
 
 };
 
+// 析构函数
 KMLNetOutput::~KMLNetOutput(){
 
 };
 
+// 创建KML文件的主函数
 void KMLNetOutput::createKML(const std::string& fileWithNodes, const std::string& kmlFileName){
-
-	std::cout << "KML will be written to: " << kmlFileName << std::endl;
+	// 输出KML文件路径
+	std::cout << "KML将写入到: " << kmlFileName << std::endl;
+	// 获取节点数量
 	int nbNodes = net_->getNbNodes();
+	// 初始化坐标和节点ID数组
 	std::vector<FPType> xCoord(nbNodes, 0);
 	std::vector<FPType> yCoord(nbNodes, 0);
 	std::vector<int> nodeID(nbNodes, 0);
 	
+	// 读取节点坐标
 	readCoord(fileWithNodes, xCoord, yCoord, nodeID);
 
+	// 创建KML文件写入器
 	FileWriter writeKml(kmlFileName);
 	writeKml.writeLine(createKmlHeader());
 	
+	// 遍历所有链接
 	for (StarLink* link = net_->beginOnlyLink(); link != NULL; link = net_->getNextOnlyLink()) {
 		if (shouldCreatePlacemark(link)) {
+			// 获取链接的起点和终点索引
 			int tail = link->getNodeFromIndex();
 			int head = link->getNodeToIndex();
+			// 获取坐标
 			FPType x1 = xCoord[tail];
 			FPType y1 = yCoord[tail];
 			FPType x2 = xCoord[head];
 			FPType y2 = yCoord[head];
-			if (x1 == 0 && y1 == 0) std::cout << "Missing node coordinate: " << link->getNodeFrom() << 
-								" link: " << link->toString() << std::endl; 
-			if (x2 == 0 && y2 == 0) std::cout << "Missing node coordinate: " << link->getNodeTo() << 
-								" link: " << link->toString() << std::endl;
+			// 检查缺失的节点坐标
+			if (x1 == 0 && y1 == 0) std::cout << "缺失节点坐标: " << link->getNodeFrom() << 
+								" 链接: " << link->toString() << std::endl; 
+			if (x2 == 0 && y2 == 0) std::cout << "缺失节点坐标: " << link->getNodeTo() << 
+								" 链接: " << link->toString() << std::endl;
+			// 如果坐标有效，创建地标
 			if (x1 != 0 && y1 != 0 && x2 != 0 && y2 != 0) 
 				writeKml.writeLine(createPlacemark(x1, y1, x2, y2, link)); 
 		}
 	}
 
+	// 写入KML文件尾部
 	writeKml.writeLine(createKmlFooter());
 };
 
+// 判断是否应该为链接创建地标
 bool KMLNetOutput::shouldCreatePlacemark(StarLink* link) {
 	return link->getFlow() > 0.0;
 };
 
+// 创建KML文件头部
 std::string KMLNetOutput::createKmlHeader() {
 	std::string header;
 	header.append("<?xml version=\"1.0\" encoding=\"utf-8\"?> \n");
 	header.append("<kml xmlns=\"http://earth.google.com/kml/2.2\"> \n");
 	header.append("\t<Document>\n");
-    header.append("\t\t<name>Transportation network: " + net_->getNetName() + "</name>\n"); 
+    header.append("\t\t<name>交通网络: " + net_->getNetName() + "</name>\n"); 
  	header.append("\t\t<Style id=\"styleEmpty\">\n");
     header.append("\t\t\t<IconStyle>\n"); 
     header.append("\t\t\t\t<Icon></Icon>\n"); 
@@ -74,22 +91,28 @@ std::string KMLNetOutput::createKmlHeader() {
     return header;
 };
 
+// 创建KML文件尾部
 std::string KMLNetOutput::createKmlFooter(){
 	return ("\t</Document>\n</kml>\n");
 };
 
+// 创建地标
 std::string KMLNetOutput::createPlacemark(FPType x1, FPType y1, FPType x2,
 		FPType y2, StarLink* link){ 
 	std::stringstream ss;
 
+	// 获取链接索引
 	int linkIndex = link->getIndex();
 	std::string placemark;
+	// 添加链接样式
 	placemark.append(createStyleForLink(linkIndex, calcLineWidth(link)));
 
 	placemark.append("<Placemark>\n");
 	
+	// 添加描述信息
 	placemark.append(createDescription(link));
 
+	// 添加样式URL
 	ss << "\t<styleUrl>#style" << linkIndex << "</styleUrl>\n";
 	placemark.append(ss.str());
     placemark.append("\t\t<LineString>\n");
@@ -97,6 +120,7 @@ std::string KMLNetOutput::createPlacemark(FPType x1, FPType y1, FPType x2,
     placemark.append("\t\t</LineString> \n");
     placemark.append("</Placemark> \n");
 
+    // 添加点标记
     placemark.append("<Placemark>\n");
     ss.str("");
     placemark.append("\t<styleUrl>#styleEmpty</styleUrl>\n");
@@ -109,6 +133,7 @@ std::string KMLNetOutput::createPlacemark(FPType x1, FPType y1, FPType x2,
     return placemark;
 };
 
+// 创建链接样式
 std::string KMLNetOutput::createStyleForLink(int linkIndex, FPType lineWidth){
 	std::stringstream ss;
 	ss << "\t\t<Style id=\"style" << linkIndex << "\">\n";
@@ -121,6 +146,7 @@ std::string KMLNetOutput::createStyleForLink(int linkIndex, FPType lineWidth){
     styleString.append("\t\t\t</LabelStyle> \n");
    	styleString.append("\t\t\t<LineStyle> \n");
 
+    // 添加颜色和宽度
     styleString.append("\t\t\t\t<color>" + createColorFromLineWidth(lineWidth) + "</color> \n");
     styleString.append("\t\t\t\t<width>" + createLineWidth(lineWidth) + "</width> \n");
    	
@@ -130,15 +156,17 @@ std::string KMLNetOutput::createStyleForLink(int linkIndex, FPType lineWidth){
     return styleString;
 };
 
+// 根据线宽创建颜色
 std::string KMLNetOutput::createColorFromLineWidth(FPType lineWidth){
 	if (lineWidth > 1.0) {
-    	return getRedColor();
+    	return getRedColor();  // 流量大于容量时显示红色
     } else if (lineWidth == -1.0) {
-    	return getGreenColor();
+    	return getGreenColor();  // 容量为0时显示绿色
     }
-   	return getBlueColor();
+   	return getBlueColor();  // 其他情况显示蓝色
 };
 
+// 创建线宽
 std::string KMLNetOutput::createLineWidth(FPType lineWidth){
 	std::stringstream ss;
 	if (lineWidth < 0.0) lineWidth  = 1.0;
@@ -146,6 +174,7 @@ std::string KMLNetOutput::createLineWidth(FPType lineWidth){
     return ss.str();
 }
 
+// 计算线宽
 FPType KMLNetOutput::calcLineWidth(StarLink* link){
 	FPType capacity = (link->getLinkFnc())->getCapacity();
 	FPType lineWidth = link->getFlow() / capacity;
@@ -155,6 +184,7 @@ FPType KMLNetOutput::calcLineWidth(StarLink* link){
 	return lineWidth;
 };
 
+// 创建描述信息
 std::string KMLNetOutput::createDescription(StarLink* link) {
 	std::string description("");
 	description.append("\t<name>" + createLinkNameForDescription(link) + "</name>\n");
@@ -162,12 +192,14 @@ std::string KMLNetOutput::createDescription(StarLink* link) {
 	return description;
 };
 
+// 创建链接名称
 std::string KMLNetOutput::createLinkNameForDescription(StarLink* link) {
 	std::stringstream ss;
 	ss << link->getIndex();
 	return ss.str();
 };
 
+// 创建描述字符串
 std::string KMLNetOutput::createDescriptionString(StarLink* link){
 	LinkFnc* fnc = link->getLinkFnc();
 	FPType ratio = 0;

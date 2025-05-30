@@ -1,53 +1,50 @@
-#ifndef DEFAULT_NET_PARSER
+#ifndef DEFAULT_NET_PARSER  // 防止头文件重复包含
 #define DEFAULT_NET_PARSER 
 
-#include "UsedTypes.h"
+#include "UsedTypes.h"  // 包含基本类型定义
 
-#include <string>
+#include <string>  // 包含字符串类
 
-class StarNetwork;
-class FileReader;
+class StarNetwork;  // 前向声明StarNetwork类
+class FileReader;   // 前向声明FileReader类
 
-/** Internal utility structure.
+/** 内部工具结构体
 */
 struct DataFromHeader { 
-	int nbNodes;
-	int nbLinks; 
-	int firstNode;
+	int nbNodes;    // 节点数量
+	int nbLinks;    // 链路数量
+	int firstNode;  // 第一个节点
 };
 
-/** \brief Implements parser for network from text file.
+/** \brief 实现从文本文件解析网络的解析器
 	
-	File format is described <a href="http://www.bgu.ac.il/~bargera/tntp/"> here </a>.
+	文件格式描述见 <a href="http://www.bgu.ac.il/~bargera/tntp/"> 这里 </a>。
 */
 class DefaultNetParser {
 	public:
-		/** @param fileWithNetwork path to file with network.
+		/** @param fileWithNetwork 包含网络的文件路径
 		*/
-		DefaultNetParser(const std::string& fileWithNetwork);
-		virtual ~DefaultNetParser();
+		DefaultNetParser(const std::string& fileWithNetwork);  // 构造函数
+		virtual ~DefaultNetParser();  // 虚析构函数
 
-		/** Parses network from file specified in the class constructor 
-			and creates a StarNetwork object. 
-			\note  It is assumed that all links are SORTED according to ascending order of head nodes
+		/** 从类构造函数指定的文件中解析网络并创建StarNetwork对象
+			\note  假设所有链路都按照头节点的升序排序
 		*/
-		virtual StarNetwork* parseNetwork();
+		virtual StarNetwork* parseNetwork();  // 解析网络的方法
 
 	protected:
-		const std::string fileWithNetwork_;
+		const std::string fileWithNetwork_;  // 存储网络文件路径
 
-		/** Hook method for derived classes for the case when file with network
-			also contains link tolls.
+		/** 当网络文件也包含链路收费时的钩子方法，供派生类使用
 		*/
-		virtual void allocateTolls(int nbLinks) {};
-		/** Hook method for derived classes for the case when file with network
-			also contains link tolls.
+		virtual void allocateTolls(int nbLinks) {};  // 分配收费数组
+		/** 当网络文件也包含链路收费时的钩子方法，供派生类使用
 		*/
-		virtual void setToll(int linkIndex, TollType toll) {};
+		virtual void setToll(int linkIndex, TollType toll) {};  // 设置链路收费
 
 	private:
 		
-		DataFromHeader parseDataFromHeader(FileReader& readFile);
+		DataFromHeader parseDataFromHeader(FileReader& readFile);  // 解析文件头数据
 
 };
 #endif

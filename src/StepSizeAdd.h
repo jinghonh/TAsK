@@ -1,21 +1,20 @@
-#ifndef STEP_SIZE_ADDITIVE 
+#ifndef STEP_SIZE_ADDITIVE // 防止头文件重复包含
 #define STEP_SIZE_ADDITIVE
 
-#include "StepSize.h"
+#include "StepSize.h" // 包含步长基类头文件
 
-class Derivative;
+class Derivative; // 前向声明导数类
 
-/** \brief This class implements step size calculation in the case when 
-	additive path cost function is used.
+/** \brief 此类实现使用加性路径成本函数时的步长计算。
 */
-class StepSizeAdd : public StepSize {
+class StepSizeAdd : public StepSize { // 加性步长类，继承自StepSize
 	public:
-		StepSizeAdd(LineSearch *lineSearch, Derivative *der);
-		~StepSizeAdd();
+		StepSizeAdd(LineSearch *lineSearch, Derivative *der); // 构造函数
+		~StepSizeAdd(); // 析构函数
 		
-		void initialiseDerivative(DescDirection *algo);
+		void initialiseDerivative(DescDirection *algo); // 实现初始化导数方法
 	private:
-		Derivative *der_;
+		Derivative *der_; // 导数对象指针
 };
 
 #endif

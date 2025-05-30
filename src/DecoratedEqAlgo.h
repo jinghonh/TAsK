@@ -3,25 +3,24 @@
 
 #include "UsedTypes.h"
 
-/** \brief This class is a base class for decorators of EqAlgo. */
+/** \brief 此类是 EqAlgo 装饰器的基类。*/
 class DecoratedEqAlgo {
 	public:
-		virtual ~DecoratedEqAlgo() {};
-		virtual int execute() = 0;
+		virtual ~DecoratedEqAlgo() {}; // 虚析构函数
+		virtual int execute() = 0; // 纯虚函数，执行算法
 
-		/** @return total CPU time (in seconds) spent on checking convergence of the algorithm.
+		/** @return 检查算法收敛性所花费的总 CPU 时间（秒）。
 		*/
-		virtual FPType getTotalConvTime() = 0;
+		virtual FPType getTotalConvTime() = 0; // 纯虚函数，获取总收敛时间
 
-		/** @return total CPU time (in seconds) spent on each iteration of the algorithm (output 
-			operations are not included, only pure iteration time).
+		/** @return 算法每次迭代所花费的总 CPU 时间（秒）（不包括输出操作，仅为纯迭代时间）。
 		*/
-		virtual FPType getTotalPureIterTime() = 0;
+		virtual FPType getTotalPureIterTime() = 0; // 纯虚函数，获取总纯迭代时间
 
-		virtual FPType getInitialisationTime() = 0;
+		virtual FPType getInitialisationTime() = 0; // 纯虚函数，获取初始化时间
 		
 	protected:
-		DecoratedEqAlgo(){};
+		DecoratedEqAlgo(){}; // 保护构造函数
 };
 
 #endif

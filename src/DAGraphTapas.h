@@ -6,16 +6,15 @@
 class ShortestPath;
 class PASManager;
 
-/** \brief Implements main steps of TAPAS algorithm.
-	\details For details see \cite{Hillel2010}.
-	\note This implementation of TAPAS is not randomized,
-	it does not implement flow proportionality condition.
-	Also different condition is used in order to determine
-	if PAS is inactive (PAS is inactive if flow was not 
-	moved during previous iteration). 
-	The following threshold is used in case of effective PAS creation \f$ 10 \cdot 10^{-iter}\f$ where
-	\f$ iter \f$ is current iteration number. Performance of the algorithm depends on this measure.
-	Only creation of effective PASs is implemented. Brunch shift is not implemented. 
+/** \brief 实现 TAPAS 算法的主要步骤。
+	\details 详细信息请参见 \cite{Hillel2010}。
+	\note TAPAS 的此实现不是随机的，
+	它没有实现流量比例条件。
+	此外，为了确定 PAS 是否处于非活动状态，使用了不同的条件
+	（如果在上一次迭代期间没有移动流量，则 PAS 处于非活动状态）。
+	在有效 PAS 创建的情况下使用以下阈值：\f$ 10 \cdot 10^{-iter}\f$，其中
+	\f$ iter \f$ 是当前迭代次数。算法的性能取决于此度量。
+	仅实现了有效 PAS 的创建。未实现分支转移。
 */
 class DAGraphTapas : public DAGraph {
 	public:
@@ -23,18 +22,17 @@ class DAGraphTapas : public DAGraph {
   							  int originIndex, ShortestPath *shPath, PASManager *pasManager);
 		~DAGraphTapas();
 		
-		/** Implements main steps of TAPAS including creation of PASs and flow
-			moves within ALL active PASs.
+		/** 实现 TAPAS 的主要步骤，包括创建 PAS 和在所有活动 PAS 内移动流量。
 		*/
 		bool moveFlow();
 
-		/** Stores the value of minimum shift. It is calculated and used in PAS.*/
+		/** 存储最小转移量的值。它在 PAS 中计算和使用。*/
 		void setMinShift(FPType value);
 
-		/** @return value of possible minimum shift. */
+		/** @return 可能的最小转移量的值。*/
 		FPType getMinShift();
 		
-		/** This method removes cyclic flows. */
+		/** 此方法移除循环流。*/
 		void removeCyclicFlows();		
 		
 	private:
@@ -43,23 +41,21 @@ class DAGraphTapas : public DAGraph {
 		FPType minShift_;
 
 		
-		std::list<StarLink*> exploredLinks_; /**< Stores explored links 
-								during topological sort. It is used in handleBackEdge().*/
+		std::list<StarLink*> exploredLinks_; /**< 存储在拓扑排序期间探索过的链路。
+								在 handleBackEdge() 中使用。*/
 		
-		/** This method is called in topologicalSort(). When a back edge is discovered,
-		 	it removes cyclic flows
-			and updates corresponding link travel times.
-			@return always returns true. It is used in order to stop recursive calls
-			in topologicalSort().
+		/** 此方法在 topologicalSort() 中调用。当发现后向边时，
+		 	它会移除循环流并更新相应的链路行程时间。
+			@return 总是返回 true。它用于停止 topologicalSort() 中的递归调用。
 		*/
 		bool handleBackEdge(StarLink* link);
 
-		/** This method stores explored link into internal data structure.*/
+		/** 此方法将探索过的链路存储到内部数据结构中。*/
 		void handleExploredLink(StarLink* link);
 
-		/** Additional condition in topologicalSort(). In case of TAPAS topologicalSort()
-			must check only links used by this origin, i.e. links with positive origin flow.
-			@return true if origin flow of passed link is greater than zeroFlow_, false otherwise.
+		/** topologicalSort() 中的附加条件。在 TAPAS 的情况下，topologicalSort()
+			必须仅检查此起点使用的链路，即具有正起点流量的链路。
+			@return 如果传递的链路的起点流量大于 zeroFlow_，则返回 true，否则返回 false。
 		*/
 		bool checkPositiveFlow(int linkIndex);
 		

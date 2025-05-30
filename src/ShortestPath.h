@@ -5,37 +5,33 @@
 
 #include <iostream>
 
-/** \brief This is an abstract class that defines the interface for single-objective 
-	shortest-path algorithms.
+/** \brief 这是一个抽象类，定义了单目标最短路径算法的接口。
  */
 class ShortestPath {
 	
 	public:
 		virtual ~ShortestPath(){};
 		
-		/** Calculates shortest path from origin \b originIndex to all other nodes
-			that are reachable from this origin.
+		/** 计算从起点 \b originIndex 到所有其他可达节点的最短路径。
 		*/
-		virtual void calculate(int originIndex) =0;  
+		virtual void calculate(int originIndex) =0;
 
-		/** Calculates shortest path from origin \b originIndex to destination \b destIndex.
-			If it is not over-ridden by children classes usual shortest path from a given origin
-			to all other nodes is called.
+		/** 计算从起点 \b originIndex 到终点 \b destIndex 的最短路径。
+			如果子类没有重写此方法，则调用常规的从给定起点到所有其他节点的最短路径计算。
 		*/
 		virtual void calculate(int originIndex, int destIndex, int odPairIndex) {
 			calculate(originIndex);
 		}; 
 		
-		/** @return shortest path distance to node \b destIndex */
+		/** @return 到节点 \b destIndex 的最短路径距离 */
 		virtual FPType getCost(int destIndex) const =0;
 		
-		/** @return pointer to a link that belongs to the shortest path and
-			points to node \b destIndex, return NULL if the origin is passed or
-			if destIndex is not reachable from current origin.
+		/** @return 指向属于最短路径并指向节点 \b destIndex 的链接的指针，
+			如果是起点或者目标节点从当前起点不可达，则返回NULL。
 		*/
-		virtual StarLink* getInComeLink(int destIndex) const =0;  
+		virtual StarLink* getInComeLink(int destIndex) const =0;
 		
-		/** For debugging. Prints shortest path from origin to destIndex on screen.
+		/** 用于调试。在屏幕上输出从起点到 destIndex 的最短路径。
 		*/
 		void printPath(int destIndex) const {
 			StarLink *link = getInComeLink(destIndex);

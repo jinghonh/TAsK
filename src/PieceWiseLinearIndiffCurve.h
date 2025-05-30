@@ -1,59 +1,58 @@
-#ifndef PIECEWISE_LINEAR_INDIFF_CURVE
-#define PIECEWISE_LINEAR_INDIFF_CURVE
+#ifndef PIECEWISE_LINEAR_INDIFF_CURVE // 防止头文件重复包含
+#define PIECEWISE_LINEAR_INDIFF_CURVE // 定义PIECEWISE_LINEAR_INDIFF_CURVE宏
 
-#include "IndiffCurve.h"
+#include "IndiffCurve.h" // 包含无差异曲线类
 
-/** \brief This class implements piecewise-linear scalarization function. */
-class PieceWiseLinearIndiffCurve : public IndiffCurve {
+/** \brief 此类实现分段线性标量化函数。 */
+class PieceWiseLinearIndiffCurve : public IndiffCurve { // 分段线性无差异曲线类，继承自无差异曲线
 
 	public:
-		PieceWiseLinearIndiffCurve(int nbPoints);
-		~PieceWiseLinearIndiffCurve();
+		PieceWiseLinearIndiffCurve(int nbPoints); // 构造函数，指定点数
+		~PieceWiseLinearIndiffCurve(); // 析构函数
 
-		/** This method is used for scalarization function creation. 
-			Adds point (\b toll, \b value) to the scalarization function. 
-			\note Points must be added in the increasing order of toll. Points with 
-			the same value of toll cannot be added. All values must be non-negative.
-			The first value of toll must be zero.
-			If these conditions are violated, the error will be thrown.
+		/** 此方法用于创建标量化函数。
+			添加点(\b toll, \b value)到标量化函数。
+			\note 添加的点必须按照toll值递增顺序。不能添加具有相同toll值的点。
+			所有值必须非负。第一个toll值必须为零。
+			如果违反这些条件，将抛出错误。
 		*/
-		void addPoint(TollType toll, FPType value);
+		void addPoint(TollType toll, FPType value); // 添加点到标量化函数
 
-		/** Evaluates the scalarization function given the value of toll.
-			If toll is between two known points, the returned value corresponds to a line between 
-			these two points. If toll is more than last known point, maximum value of FPType is returned.
-			If toll is negative, assert will terminate the program.
+		/** 根据给定的toll值评估标量化函数。
+			如果toll值在两个已知点之间，返回值对应于这两点之间的线。
+			如果toll大于最后一个已知点，则返回FPType的最大值。
+			如果toll为负，程序将断言终止。
 		*/
-		virtual FPType evaluate(TollType toll);
-		/** @return string representation of the scalarization function.
+		virtual FPType evaluate(TollType toll); // 评估标量化函数
+		/** @return 标量化函数的字符串表示。
 		*/
-		virtual std::string toString();
-		/** @return total number of breakpoints of the scalarization function.
+		virtual std::string toString(); // 获取字符串表示
+		/** @return 标量化函数的断点总数。
 		*/
-		int getNbPoints() const;
+		int getNbPoints() const; // 获取点数
 
-		/** Perturbs travel time values of the scalarization function.
-			@param percentage percentage of perturbation, must be within interval [0, 1].
-			@param probOfPerturbation probability of perturbation, must be within interval [0, 1].
+		/** 扰动标量化函数的旅行时间值。
+			@param percentage 扰动百分比，必须在区间[0, 1]内。
+			@param probOfPerturbation 扰动概率，必须在区间[0, 1]内。
 		*/
-		virtual void perturbTime(FPType percentage, FPType probOfPerturbation);
-		/** Perturbs travel toll values of the scalarization function.
-			@param percentage percentage of perturbation, must be within interval [0, 1].
-			@param probOfPerturbation probability of perturbation, must be within interval [0, 1].
+		virtual void perturbTime(FPType percentage, FPType probOfPerturbation); // 扰动时间值
+		/** 扰动标量化函数的通行费值。
+			@param percentage 扰动百分比，必须在区间[0, 1]内。
+			@param probOfPerturbation 扰动概率，必须在区间[0, 1]内。
 		*/
-		virtual void perturbToll(FPType percentage, FPType probOfPerturbation);
-		/** Restores not perturbed scalarization function.
+		virtual void perturbToll(FPType percentage, FPType probOfPerturbation); // 扰动通行费值
+		/** 恢复未扰动的标量化函数。
 		*/
-		virtual void restoreOriginalCurve();
+		virtual void restoreOriginalCurve(); // 恢复原始曲线
 
 	private:
-		const int nbPoints_;
-		int size_;
-		std::vector<FPType> values_;
-		std::vector<TollType> tolls_;
-		std::vector<FPType> valuesCopy_;
-		std::vector<TollType> tollsCopy_;
+		const int nbPoints_; // 点的数量，常量
+		int size_; // 当前大小
+		std::vector<FPType> values_; // 值向量
+		std::vector<TollType> tolls_; // 通行费向量
+		std::vector<FPType> valuesCopy_; // 值副本向量
+		std::vector<TollType> tollsCopy_; // 通行费副本向量
 	
 };
 
-#endif
+#endif // 结束头文件保护

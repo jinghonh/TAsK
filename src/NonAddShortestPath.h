@@ -13,9 +13,8 @@ class BiObjLabelContainer;
 #include <map>
 #include <list>
 
-/** \brief This class implements non-additive shortest path algorithm.
-	\details It is based on bi-objective shortest path and indifference 
-	curves that are encapsulated in NonAdditivePC.
+/** \brief 此类实现非加性最短路径算法。
+	\details 它基于双目标最短路径和封装在NonAdditivePC中的无差异曲线。
 */
 class NonAddShortestPath : public ShortestPath {
 
@@ -29,8 +28,7 @@ class NonAddShortestPath : public ShortestPath {
 		virtual void calculate(int originIndex, int destIndex, int odPairIndex);
 		virtual FPType getCost(int destIndex) const;
 
-		/** \note Current implementation takes linear time in number of links 
-			belonging to this path.
+		/** \note 当前实现在路径所属链接数量上具有线性时间复杂度。
 		*/
 		virtual StarLink* getInComeLink(int destIndex) const;
 
@@ -42,17 +40,16 @@ class NonAddShortestPath : public ShortestPath {
 		BiObjLabel* minCostLabel_;
 		NonAdditivePC *pathCost_;
 		
-		/** Calculates non-additive cost for a given destination based on last
-			call to non-additive shortest path.
-			@return pair path cost and pointer to label with this cost.
+		/** 根据最后一次非加性最短路径调用计算给定目的地的非加性成本。
+			@return 路径成本和具有此成本的标签指针的对。
 		*/
 		std::pair<FPType, BiObjLabel*> calculateCostToDest(int destIndex, int odPairIndex, 
 			const BiObjLabelContainer& labels);
 
-		/** Build path.
+		/** 构建路径。
 		*/
 		virtual void createPath() const;
-		/** Hook method for derived classes. Does nothing.
+		/** 派生类的钩子方法。不做任何事。
 		*/
 		virtual void doSomethingWithMinCostLabel(BiObjLabel* minCostLabel);
 

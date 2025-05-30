@@ -1,77 +1,77 @@
 #ifndef OD_MATRIX
 #define OD_MATRIX
 
-#include "UsedTypes.h"
+#include "UsedTypes.h" // 包含使用的类型定义
 
-#include <string>
-#include <unordered_map>
-#include <vector>
+#include <string> // 包含字符串库
+#include <unordered_map> // 包含无序映射容器
+#include <vector> // 包含向量容器
 
-class Origin;
+class Origin; // 前向声明Origin类
 
-typedef std::vector<Origin*>::iterator OriginIterator;
-typedef std::vector<Origin*>::const_iterator ConstOriginIterator;
+typedef std::vector<Origin*>::iterator OriginIterator; // 定义Origin指针向量的迭代器类型
+typedef std::vector<Origin*>::const_iterator ConstOriginIterator; // 定义Origin指针向量的常量迭代器类型
 
-/** \brief This class implements origin-destination matrix.
+/** \brief 此类实现起始地-目的地矩阵。
 */
-class ODMatrix {
+class ODMatrix { // 定义ODMatrix类
 	public:
 		
-		ODMatrix(int nbNodes, int nbOrigins);
-		~ODMatrix();
+		ODMatrix(int nbNodes, int nbOrigins); // 构造函数，接收节点数和起点数
+		~ODMatrix(); // 析构函数
 		
-		/** This method is used for creation of the matrix.
-			Adds Origin object  to O-D matrix.
+		/** 此方法用于创建矩阵。
+			向O-D矩阵添加Origin对象。
 		*/
-		void addOrigin(Origin *origin);
+		void addOrigin(Origin *origin); // 添加起点对象到矩阵
 		
-		/** @return iterator pointing to the beginning of he container.
+		/** @return 指向容器开始的迭代器。
 		*/
-		OriginIterator begin();
+		OriginIterator begin(); // 获取起点容器的开始迭代器
 
-		/** @return end of the container.
+		/** @return 容器的结束。
 		*/
-		OriginIterator end();
+		OriginIterator end(); // 获取起点容器的结束迭代器
 
-		ConstOriginIterator begin() const;
-		ConstOriginIterator end() const;
+		ConstOriginIterator begin() const; // 获取起点容器的常量开始迭代器
+		ConstOriginIterator end() const; // 获取起点容器的常量结束迭代器
 		
-		/** This method creates O-D indexes for all O-D pairs and fills the data structure
-			used to support getDemandByIndex() method. 
-			\note It MUST be called once when add origins have been added to the class.
+		/** 此方法为所有O-D对创建O-D索引并填充数据结构，
+			用于支持getDemandByIndex()方法。 
+			\note 必须在所有起点都添加到类后调用一次。
 		*/
-		void setIndexes();
+		void setIndexes(); // 设置所有OD对的索引
 		
-		/** Prints O-D matrix on the screen.
+		/** 在屏幕上打印O-D矩阵。
 		*/
-		void print();
+		void print(); // 打印矩阵内容到屏幕
 		
-		/** @return total number of O-D pairs.
+		/** @return O-D对的总数。
 		*/
-		int getNbODPairs() const;
-		/** @return total number of origins.
+		int getNbODPairs() const; // 获取OD对的总数
+		/** @return 起点的总数。
 		*/
-		int getNbOrigins() const;
+		int getNbOrigins() const; // 获取起点的总数
 		
-		/** This method returns demand of node \b destIndex coming from origin \b originIndex.
-			\note Complexity in average case: constant; worst case: linear in container size.
-			For details see http://www.cplusplus.com/reference/unordered_map/unordered_map/find/.
+		/** 此方法返回从起点originIndex到目的地destIndex的需求量。
+			\note 平均情况下的复杂度：常数；最坏情况：容器大小的线性时间。
+			详细信息请参见 http://www.cplusplus.com/reference/unordered_map/unordered_map/find/。
 		*/
-		FPType getDemandByIndex(int originIndex, int destIndex) const;
+		FPType getDemandByIndex(int originIndex, int destIndex) const; // 根据索引获取需求量
 
-		/** @return pointer to the Origin object given origin index.
+		/** @return 给定起点索引的Origin对象指针。
 		*/
-		Origin* getOriginByIndex(int index) const;
+		Origin* getOriginByIndex(int index) const; // 根据索引获取起点对象
 		
 	private:
 	
-		const int nbNodes_; 
-		int nbODPairs_;
-		std::vector<Origin*> odMatrix_; /**< internal representation of O-D matrix */
-		std::unordered_map<std::string, FPType> demandByIndex_; /**< special structure that allows to */
-																	/**< get demand of node given origin and destination */
-																	/**< indexes */	
-		inline std::string createKey(int originIndex, int destIndex) const;	
+		const int nbNodes_; // 节点总数
+		int nbODPairs_; // OD对总数
+		std::vector<Origin*> odMatrix_; /**< O-D矩阵的内部表示 */
+		std::unordered_map<std::string, FPType> demandByIndex_; /**< 特殊结构，允许 */
+																	/**< 给定起点和目的地索引 */
+																	/**< 获取节点的需求量 */	
+		inline std::string createKey(int originIndex, int destIndex) const; // 创建键的内联方法
 };
 
 #endif

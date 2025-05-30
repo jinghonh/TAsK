@@ -1,36 +1,36 @@
 #ifndef ORIGIN_BUSH_LUCE
 #define ORIGIN_BUSH_LUCE
 
-#include "OriginBush.h"
+#include "OriginBush.h" // 包含起点菊花基类
 
-class DAGraphLUCE;
-class LineSearch;
+class DAGraphLUCE; // 前向声明LUCE有向无环图类
+class LineSearch; // 前向声明线搜索类
 
-/** \brief This class is responsible for DAGraphLUCE creation. 
-	\details It also over-rides callBuildMinMaxTrees() method in order to avoid unnecessary 
-	calculation of min- and max-trees.
+/** \brief 此类负责DAGraphLUCE的创建。 
+	\details 它还重写了callBuildMinMaxTrees()方法，以避免不必要的
+	最小和最大树的计算。
 */
-class OriginBushLUCE : public OriginBush {
+class OriginBushLUCE : public OriginBush { // LUCE起点菊花类，继承自OriginBush
 	public:
-		explicit OriginBushLUCE(LineSearch* lineSearch);
-		~OriginBushLUCE();
+		explicit OriginBushLUCE(LineSearch* lineSearch); // 显式构造函数，接受线搜索参数
+		~OriginBushLUCE(); // 析构函数
 		
-		/** Calls OriginBush improve() method and additional method to prepare data specific 
-			to LUCE algorithm.
+		/** 调用OriginBush的improve()方法和额外的方法来准备LUCE算法
+			特定的数据。
 		*/
-		virtual bool improve();
+		virtual bool improve(); // 重写改进方法
 		
 	private:
-		DAGraphLUCE* dag_;
-		static LineSearch* lineSearch_;
+		DAGraphLUCE* dag_; // LUCE有向无环图指针
+		static LineSearch* lineSearch_; // 静态线搜索指针
 
 		virtual DAGraph* createNewDAG(int index, StarNetwork *net, ODMatrix *mat, FPType zeroFlow,
-									  FPType dirTol);
+									  FPType dirTol); // 创建新DAG的虚函数实现
 		
-		/** Does noting because LUCE needs only topological order and not min- or
-			max-trees.
+		/** 什么都不做，因为LUCE只需要拓扑顺序而不需要最小或
+			最大树。
 		*/
-		virtual void callBuildMinMaxTrees(){};
+		virtual void callBuildMinMaxTrees(){}; // 重写的空方法，避免构建最小最大树
 };
 
 #endif

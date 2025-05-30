@@ -20,8 +20,7 @@ OriginBush::~OriginBush(){
 };
 
 void OriginBush::updateTopSort(){
-	// call topological sort if some of the links were removed on previous call of 
-	// mainLoop on this bush
+	// 如果在此菊花的上一次mainLoop调用中移除了一些链接，则调用拓扑排序
 	if (!topSortUpToDate_) {
 		daGraph_->topologicalSort();
 		topSortUpToDate_ = true;
@@ -31,15 +30,14 @@ void OriginBush::updateTopSort(){
 bool OriginBush::improve(){
 	
 	assert(topSortUpToDate_ == true);
-	// 1. calculate min- and max-trees - initialise u_i and U_i (it is assumed that 
-	// topological order exists)
+	// 1. 计算最小和最大树 - 初始化 u_i 和 U_i（假定存在拓扑顺序）
 	daGraph_->buildMinMaxTrees(-1);
 	
-	// 2. traverse all links that are not in the set yet and check if it is worth adding
+	// 2. 遍历所有尚未在集合中的链接，检查是否值得添加
 	bool wasImproved = daGraph_->addBetterLinks();
 	
-	// 3. if the bush was improved - topological sort - to build passes
-	if (wasImproved) { 
+	// 3. 如果菊花已改进 - 执行拓扑排序 - 构建通路
+	if (wasImproved) {
 		daGraph_->topologicalSort();
 		callBuildMinMaxTrees();
 	}
@@ -55,7 +53,7 @@ bool OriginBush::equilibrate(){
 };
 
 void OriginBush::removeUnusedLinks(){
-	// remove links with zero flow from daGraph_ AND maintain connectivity
+	// 从daGraph_中移除流量为零的链接，同时保持连通性
 	if (daGraph_->removeUnusedLinks()) {
 		topSortUpToDate_ = false;
 	}

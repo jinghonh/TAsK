@@ -1,44 +1,44 @@
 #ifndef _PATH_BASED_ALGO_
 #define _PATH_BASED_ALGO_
 
-#include "EqAlgo.h"
-#include "PathSetPrinterToFile.h"
+#include "EqAlgo.h"              // 包含均衡算法基类
+#include "PathSetPrinterToFile.h" // 包含路径集合文件打印器
 
-class PathSet;
+class PathSet;                   // 前向声明路径集合类
 
-/** \brief This class implements framework for path-based algorithms.
+/** \brief 这个类实现了基于路径算法的框架。
 */
 class PathBasedAlgo : public EqAlgo {
 	
 	public:
-		/** @param pathSet set of all paths.
-			@param component object that performs extra operations with convergence.
-			@param conv convergence measure.
-			@param net network.
-			@param timeLimit maximum allowed execution time of algorithm in seconds.
-			@param mat O-D matrix.
+		/** @param pathSet 所有路径的集合。
+			@param component 执行额外收敛操作的对象。
+			@param conv 收敛度量。
+			@param net 网络。
+			@param timeLimit 算法允许的最大执行时间(秒)。
+			@param mat 起点-终点矩阵。
 		*/
 		PathBasedAlgo(PathSet *pathSet, AddHook *component, ConvMeasure *conv, 
 					StarNetwork *net, FPType timeLimit, 
 					ODMatrix* mat); 
-		virtual ~PathBasedAlgo();
+		virtual ~PathBasedAlgo();  // 虚析构函数
 		
 	protected:
-		/** Performs main operation made during one iteration for a given O-D pair.
-			It implements equilibration I. Equilibration II over-rides this method.
-			For details see PathBasedAlgoEQII.
-			@return true if current O-D pair was equilibrated, false otherwise.
-			The return value is needed only for equilibration II.
+		/** 对给定的OD对执行一次迭代中的主要操作。
+			它实现了平衡I。平衡II重写了此方法。
+			详细信息参见PathBasedAlgoEQII。
+			@return 如果当前OD对已平衡则返回true，否则返回false。
+			返回值仅对平衡II有用。
 		*/
 		virtual bool mainLoop(ODSet *odSet);
 
 	private:
-		PathSet *pathSet_;
-		ODMatrix* mat_;
-		PathSetPrinterToFile printPathSet_;
+		PathSet *pathSet_;           // 路径集合指针
+		ODMatrix* mat_{};              // OD矩阵指针
+		PathSetPrinterToFile printPathSet_;  // 路径集合文件打印器
 
-		virtual void initialise();
-		virtual void performOneIteration();
+		virtual void initialise();           // 初始化方法
+		virtual void performOneIteration();  // 执行一次迭代方法
 		
 };
 

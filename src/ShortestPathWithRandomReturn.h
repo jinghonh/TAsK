@@ -3,18 +3,16 @@
 
 #include "ShortestPath.h"
 
-/** \brief Implements randomised flow update strategy for path-based algorithms.
+/** \brief 实现基于路径算法的随机流更新策略。
 
-	Some of the point-to-point shortest path calculations are skipped. The probability
-	of performing a point-to-point shortest path calculation depends on the current 
-	iteration: it is equal to one for the first iteration and to \f$0.1 + 1/iter\f$.
-	This class works with any kind of point-to-point shortest path: A*, non-additive
-	shortest path, etc.
+	部分点对点最短路径计算会被跳过。执行点对点最短路径计算的概率取决于
+	当前迭代：对于第一次迭代，概率等于1，对于后续迭代等于 \f$0.1 + 1/iter\f$。
+	该类可以与任何类型的点对点最短路径算法一起工作：A*、非加性
+	最短路径等。
 */
 class ShortestPathWithRandomReturn : public ShortestPath {
 	public:
-		/** @param shPath  point-to-point shortest path algorithm that will be called
-				with a certain probability.
+		/** @param shPath 将以一定概率调用的点对点最短路径算法。
 		*/
 		ShortestPathWithRandomReturn(ShortestPath* shPath);
 		~ShortestPathWithRandomReturn();
@@ -25,7 +23,7 @@ class ShortestPathWithRandomReturn : public ShortestPath {
 		virtual StarLink* getInComeLink(int destIndex) const;
 
 	protected:
-		/** @return probability of calculating point-to-point shortest path.
+		/** @return 计算点对点最短路径的概率。
 		*/
 		virtual FPType getProbability() const;
 

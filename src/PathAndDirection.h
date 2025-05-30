@@ -1,35 +1,35 @@
-#ifndef PATH_AND_DIRECTION
-#define PATH_AND_DIRECTION
+#ifndef PATH_AND_DIRECTION // 防止头文件重复包含
+#define PATH_AND_DIRECTION // 定义头文件宏
 
-#include "UsedTypes.h"
+#include "UsedTypes.h" // 包含自定义类型头文件
 
-class Path;
+class Path; // 前向声明路径类
 
-/** \brief This class is a basic element used in DescDirectionPath. It represents a pair 
-	of two values: Path and direction value associated with a given Path.
+/** \brief 这个类是DescDirectionPath中使用的基本元素。它表示一对
+	两个值：路径和与给定路径相关联的方向值。
 */
-class PathAndDirection {
+class PathAndDirection { // 路径和方向类
 	public:
-		PathAndDirection();
-		~PathAndDirection();
+		PathAndDirection(); // 构造函数
+		~PathAndDirection(); // 析构函数
 		
-		/** @return pointer to object that stores path.
+		/** @return 存储路径的对象指针。
 		*/
-		Path* getPath() const;
-		/** @return value of the direction of descent.
+		Path* getPath() const; // 获取路径的方法
+		/** @return 下降方向的值。
 		*/
-		FPType getDirectionValue() const;
+		FPType getDirectionValue() const; // 获取方向值的方法
 		
-		/** Sets pointer of the object that stores path.
+		/** 设置存储路径的对象指针。
 		*/
-		void setPath(Path *path);
-		/** Sets direction of descent value.
+		void setPath(Path *path); // 设置路径的方法
+		/** 设置下降方向值。
 		*/
-		void setDirection(FPType direction);
+		void setDirection(FPType direction); // 设置方向的方法
 		
 	private:
-		Path* path_;
-		FPType directionVal_;
+		Path* path_; // 路径指针
+		FPType directionVal_; // 方向值
 };
 
 #endif

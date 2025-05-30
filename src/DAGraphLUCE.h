@@ -6,17 +6,15 @@
 
 #include <vector>
 
-/** \brief Implements origin-based algorithm LUCE.
-	\details For details see \cite Gentile2014. 
-	\note Current implementation is a bit different from what is said in the paper.
-	It is origin based instead of destination based.
-	In many places algorithm iterates through bushes instead of network.
-	Also link travel times are updated on the fly only when the flow there changes.
-	\warning This algorithm showed some problems with converge when required precision is high. 
-	The possible reason is problems with floating point operations, big amounts of flow might be lost
-	after several iterations.
-	Another problematic issue with this algorithm is related to degenerate situation when derivative is
-	zero. At the moment this problem is solved by setting the derivative to one.
+/** \brief 实现基于起点的 LUCE 算法。
+	\details 详细信息请参见 \cite Gentile2014。
+	\note 当前实现与论文中的描述略有不同。
+	它是基于起点的，而不是基于终点的。
+	在许多地方，算法遍历丛 (bushes) 而不是网络。
+	此外，仅当链路上的流量发生变化时，才会动态更新链路的行程时间。
+	\warning 当要求的精度较高时，此算法在收敛方面显示出一些问题。
+	可能的原因是浮点运算的问题，多次迭代后可能会丢失大量流量。
+	此算法的另一个有问题的问题与导数为零的退化情况有关。目前，通过将导数设置为一来解决此问题。
 */
 class DAGraphLUCE : public DAGraph {
 	public:
@@ -25,15 +23,14 @@ class DAGraphLUCE : public DAGraph {
 					int originIndex, LineSearch* lineSearch);
 		~DAGraphLUCE();
 		
-		/** Implements flow move of LUCE.
-			@return always returns false because this algorithm is not meant to
-			implement Equilibration II.
+		/** 实现 LUCE 算法的流量移动。
+			@return 总是返回 false，因为此算法并非旨在实现 Equilibration II。
 		*/
 		virtual bool moveFlow();
 		
-		/** Sets derivative to zero first and then recalculates it for the links that belong 
-			to the bush. It also calculates flow portions and node flows. 
-			It is required that topological order exists.
+		/** 首先将导数设置为零，然后为属于丛的链路重新计算导数。
+			它还计算流量分配和节点流量。
+			要求存在拓扑顺序。
 		*/
 		void prepareData(); 
 		

@@ -3,11 +3,10 @@
 
 #include "NonAddShortestPath.h"
 
-/** \brief Implements non-additive shortest path for all-or-nothing.
+/** \brief 实现全有或全无(all-or-nothing)的非加性最短路径。
 
-	Non-additive one-source shortest path does not store paths that are need for all-or-nothing.
-	The responsibility of this class is to create paths for every O-D pair once non-additive 
-	shortest path is calculated.
+	非加性单源最短路径不存储全有或全无所需的路径。
+	该类的职责是在计算非加性最短路径后为每个O-D对创建路径。
 */
 class NonAddShortestPathForAON : public NonAddShortestPath {
 	public:
@@ -18,7 +17,7 @@ class NonAddShortestPathForAON : public NonAddShortestPath {
 		virtual StarLink* getInComeLink(int destIndex) const;
 
 	protected:
-		/** Stores minimal cost label minCostLabel into internal data structure.
+		/** 将最小成本标签minCostLabel存储到内部数据结构中。
 		*/
 		virtual void doSomethingWithMinCostLabel(BiObjLabel* minCostLabel);
 

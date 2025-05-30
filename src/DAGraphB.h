@@ -5,15 +5,19 @@
 
 class Path;
 
-/** \brief This class implements origin-based algorithm B.
-	\details For details see \cite Dial_2006.
+/** \brief 该类实现基于起点的算法B。
+	\details 详细内容见 \cite Dial_2006.
 */
 class DAGraphB : public DAGraph {
 	public: 
 		
 		/** 
-			@param useMultiStep true if multiple Newton steps must be applied, false otherwise.
-			@param dirTol tolerance of the direction of descent.
+			@param net 指向 StarNetwork 对象的指针
+			@param mat 指向 ODMatrix 对象的指针
+			@param zeroFlow 零流量阈值
+			@param dirTol 方向容差，用于判断下降方向是否有效
+			@param originIndex 起点索引
+			@param useMultiStep 为true时表示应用多步牛顿法，为false时表示不应用
 		*/
 		DAGraphB(StarNetwork *net, ODMatrix *mat, FPType zeroFlow, FPType dirTol,
 				 int originIndex, bool useMultiStep);
@@ -22,8 +26,8 @@ class DAGraphB : public DAGraph {
 		bool moveFlow();
 		
 	protected:
-		/** Implements Newton flow step. See DAGraphBWithStep for other 
-			step size implementations.
+		/** 实现牛顿法流量步长计算。见DAGraphBWithStep为其他 
+			step size实现。
 		*/
 		virtual FPType calcFlowStep(Path* minPath, Path* maxPath) const;
 
@@ -34,21 +38,19 @@ class DAGraphB : public DAGraph {
 		static FPType dirTol_;
 
 		
-		/** Perform a flow move: flow is moved from longest path to shortest path 
-		 	that belong to the bush and start at \b origin and finish at node \b index.
-		 	It is assumed that \b minPath 
-			and \b maxPath do not have common links.
+		/** 执行一次流量移动：将流量从属于bush且起于origin、止于index节点的最长路径移动到最短路径 
+		 	假设minPath 和maxPath无公共边。
 		*/
 		bool performFlowMove(int index, int origin);
 		
-		/** Adds flow \b dFlow to \b link, updates corresponding origin flow and
-			recalculates travel time of \b link.
+		/** 给link增加流量dFlow，更新对应的起点流量并
+			重新计算link的旅行时间。
 		*/
 		void addFlow(StarLink *link, FPType dFlow);
 
-		/** For debugging. */
+		/** 调试用，打印到指定节点index的最短路径上的各链接的起点流量。 */
 		void printMinPathOFlows(int index) const;
-		/** For debugging. */
+		/** 调试用，打印到指定节点index的最长路径上的各链接的起点流量。 */
 		void printMaxPathOFlows(int index) const;
 		
 };

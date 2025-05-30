@@ -23,7 +23,7 @@ class ParseParams {
 		/** @return string without comments if there were any.
 			\note Supported comments: \b/\b*, \b/\b/
 		*/
-		std::string skipComments(std::string line);
+		std::string skipComments(const std::string& line);
 		
 };
 

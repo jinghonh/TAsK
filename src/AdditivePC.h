@@ -3,15 +3,15 @@
 
 #include "PathCost.h"
 
-/** \brief Additive path cost - sum of the costs of the links belonging to a given path.*/
+/** \brief 加性路径成本 - 属于给定路径的链接成本之和。*/
 class AdditivePC : public PathCost {
 	public:
 		AdditivePC();
 		~AdditivePC();
 		
-		/** Calculates additive path cost.
-			@param path path.
-			@param odIndex index of O-D pair.
+		/** 计算加性路径成本。
+			@param path 路径。
+			@param odIndex O-D对索引。
 		*/
 		FPType calculate(Path *path, int odIndex) const;
 };

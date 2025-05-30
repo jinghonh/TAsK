@@ -1,26 +1,26 @@
-#include "OriginBasedAlgoEQII.h"
-#include "OriginBush.h"
+#include "OriginBasedAlgoEQII.h" // 包含平衡II基于起点算法的头文件
+#include "OriginBush.h" // 包含起点菊花的头文件
 
 OriginBasedAlgoEQII::OriginBasedAlgoEQII(OriginSet *originSet, StarNetwork *net, AddHook *component, 
 		ConvMeasure* conv, FPType timeLimit, int maxNbIter) : 
-		OriginBasedAlgo(originSet, net, component, conv, timeLimit), maxNbIter_(maxNbIter) {
+		OriginBasedAlgo(originSet, net, component, conv, timeLimit), maxNbIter_(maxNbIter) { // 构造函数，初始化基类并设置最大迭代次数
 
 }; 
 
-OriginBasedAlgoEQII::~OriginBasedAlgoEQII() {
+OriginBasedAlgoEQII::~OriginBasedAlgoEQII() { // 析构函数
 
 }; 
 
-bool OriginBasedAlgoEQII::mainLoop(OriginBush *bush) {
-	int nbIter = 0;
-	while (true) {
-		++nbIter; 
-		bool canMoveFlow = OriginBasedAlgo::mainLoop(bush);
-		if (!canMoveFlow) return false;
-		bush->updateTopSort();
-		if (!bush->improve()) return false; 
-		if (nbIter >= maxNbIter_) return false;
+bool OriginBasedAlgoEQII::mainLoop(OriginBush *bush) { // 重写主循环方法
+	int nbIter = 0; // 初始化迭代计数器
+	while (true) { // 无限循环
+		++nbIter; // 增加迭代计数
+		bool canMoveFlow = OriginBasedAlgo::mainLoop(bush); // 调用基类的主循环方法
+		if (!canMoveFlow) return false; // 如果不能移动流量，返回false
+		bush->updateTopSort(); // 更新拓扑排序
+		if (!bush->improve()) return false; // 如果无法改进，返回false
+		if (nbIter >= maxNbIter_) return false; // 如果达到最大迭代次数，返回false
 	}; 
-	return false;
+	return false; // 永远不会执行到这里，但需要返回值
 }; 
 

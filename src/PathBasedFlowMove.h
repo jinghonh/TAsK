@@ -1,51 +1,49 @@
 #ifndef PATH_BASED_FLOW_MOVE
 #define PATH_BASED_FLOW_MOVE
 
-#include <list>
+#include <list>          // 包含链表容器
 
-class PathAndDirection;
-class DescDirectionPath;
-class Path;
+class PathAndDirection;   // 前向声明路径和方向类
+class DescDirectionPath;  // 前向声明下降方向路径类
+class Path;              // 前向声明路径类
 
-/** \brief This class is responsible for performing a flow move within current ODSet.
-	\note Only path flows are changed (link flows remain the same).
+/** \brief 这个类负责在当前OD集合内执行流量移动。
+	\note 仅改变路径流量（链路流量保持不变）。
 */
 class PathBasedFlowMove {
 	public:
-		virtual ~PathBasedFlowMove(){};
+		virtual ~PathBasedFlowMove(){}; // 虚析构函数
 		
-		/** Calculates path direction of descent.
-			@return true if it is impossible to move flow (it happens only in case of
-			PathBasedFlowMoveWithStep when calculated step size is zero), false otherwise.
+		/** 计算路径下降方向。
+			@return 如果无法移动流量则返回true（仅在PathBasedFlowMoveWithStep中计算的步长为零时发生），
+			否则返回false。
 		*/
 		bool calculatePathDirection(const std::list<Path*> &paths);
 		
-		/** This method is responsible for shifting path flows according to a specified algorithm.
+		/** 这个方法负责根据指定算法移动路径流量。
 		*/
 		virtual bool executeFlowMove() = 0;
 		
-		/** @return pointer to the first PathAndDirection object in the list.
-			\warning it is not safe to use this method in a nested loop when this method is 
-			called more than once on the same object.
+		/** @return 指向列表中第一个PathAndDirection对象的指针。
+			\warning 在同一对象上多次调用此方法的嵌套循环中使用此方法是不安全的。
 		*/
 		PathAndDirection* beginPathDirection() const;
-		/** @return pointer to the next PathAndDirection object in the list, NULL if end of list.
-			\warning it is not safe to use this method in a nested loop when it is 
-			called more than once on the same object.
+		/** @return 指向列表中下一个PathAndDirection对象的指针，如果到达列表末尾则返回NULL。
+			\warning 在多次调用此方法的嵌套循环中使用此方法是不安全的。
 		*/
 		PathAndDirection* getNextPathDirection() const;
 
 	protected:
 		
-		PathBasedFlowMove(DescDirectionPath* pathDirectionAlgo);
+		PathBasedFlowMove(DescDirectionPath* pathDirectionAlgo); // 构造函数
 		
-		PathAndDirection** pathDirection_;
-		int size_;
-		mutable int currDirection_;
+		PathAndDirection** pathDirection_; // 路径方向数组指针
+		int size_;                        // 路径方向数组大小
+		mutable int currDirection_;       // 当前方向索引(可变的)
 		
 	private:
 		
-		DescDirectionPath* pathDirectionAlgo_; 
+		DescDirectionPath* pathDirectionAlgo_; // 下降方向路径算法指针
 };
 
 #endif

@@ -1,36 +1,36 @@
-#ifndef _DESC_DIRECTION_PATH_ISP_
+#ifndef _DESC_DIRECTION_PATH_ISP_  // 防止头文件重复包含
 #define _DESC_DIRECTION_PATH_ISP_
 
-#include "DescDirectionPath.h"
+#include "DescDirectionPath.h"  // 包含基类头文件
 
-/** \brief This class implements direction of descent of improved social pressure algorithm.
-	\details For details see \cite Kumar2011.
+/** \brief 该类实现了改进的社会压力算法的下降方向
+    \details 详细信息请参见 \cite Kumar2011
 */
-class DescDirectionPathISP : public DescDirectionPath {
-	public:
-		/** @param slope precision of path derivatives, see \cite Kumar2011.
-			@param scaleFact value of \f$\pi\f$, see \cite Kumar2011.
-			@param delta direction of descent tolerance.
-		*/
-		DescDirectionPathISP(FPType slope, FPType scaleFact, FPType delta);
-		~DescDirectionPathISP();
-		
-		PathAndDirection** createPathDirection(int &size, const std::list<Path*> &paths,
-											   bool &isEquilibrated);
-		
-	private:
-		const FPType slope_;
-		const FPType scaleFact_;
-		
-		/** Calculates threshold used in the algorithm in order to
-			divide the sets of paths into two groups. For details see \cite Kumar2011.
-		*/
-		FPType calculateThreshold(FPType minDist, FPType maxDist) const;
+class DescDirectionPathISP : public DescDirectionPath {  // 继承自DescDirectionPath类
+    public:
+        /** @param slope 路径导数的精度，参见 \cite Kumar2011
+            @param scaleFact \f$\pi\f$的值，参见 \cite Kumar2011
+            @param delta 下降方向容差
+        */
+        DescDirectionPathISP(FPType slope, FPType scaleFact, FPType delta);  // 构造函数
+        ~DescDirectionPathISP();  // 析构函数
+        
+        PathAndDirection** createPathDirection(int &size, const std::list<Path*> &paths,
+                                               bool &isEquilibrated);  // 创建路径方向的方法
+        
+    private:
+        const FPType slope_;  // 路径导数精度
+        const FPType scaleFact_;  // 缩放因子
+        
+        /** 计算算法中用于将路径集合分为两组的阈值
+            详细信息请参见 \cite Kumar2011
+        */
+        FPType calculateThreshold(FPType minDist, FPType maxDist) const;  // 计算阈值的方法
 
-		/** Calculates "path derivative". It is basically the sum of derivatives
-			of link cost functions w.r.t. link flow that belong to the path.
-		*/
-		FPType calculateDerivative(Path* path) const;
+        /** 计算"路径导数"。它基本上是路径所属的链路成本函数
+            相对于链路流量的导数之和
+        */
+        FPType calculateDerivative(Path* path) const;  // 计算导数的方法
 };
 
-#endif
+#endif  // 结束头文件保护
