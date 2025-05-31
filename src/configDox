@@ -50,7 +50,7 @@ PROJECT_LOGO           =
 # 如果输入相对路径，它将相对于启动doxygen的位置。
 # 如果留空，则使用当前目录。
 
-OUTPUT_DIRECTORY       = "../vendor/Docs/"
+OUTPUT_DIRECTORY       = "../vendor1/Docs/"
 
 # 如果CREATE_SUBDIRS标签设置为YES，doxygen将在每个输出格式的输出目录下
 # 创建4096个子目录（在2个级别中），并将生成的文件分布在这些目录中。

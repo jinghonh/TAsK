@@ -9,7 +9,7 @@
 
 // 构造函数: 初始化平衡算法
 // component: 添加钩子组件
-// net: 星型网络指针
+// net: 网络指针
 // timeLimit: 时间限制
 // conv: 收敛性度量指针
 EqAlgo::EqAlgo(AddHook *component, StarNetwork* net, FPType timeLimit, 

@@ -3,8 +3,8 @@
   with the algorithm B based on quadratic approximation.
 */
 
-<NETWORK>: {../Data/SiouxFalls_net.txt}
-<OD_MATRIX>: {../Data/SiouxFalls_trips.txt}
+<NETWORK>: {Data/SiouxFalls_net.txt}
+<OD_MATRIX>: {Data/SiouxFalls_trips.txt}
 
 <WRITE_RND_TOLLS_TO_FILE>: {}
 <RND_TOLLS_PROBABILITY>: {}
@@ -16,7 +16,7 @@
 <MAX_NB_POINTS_PER_CURVE>: {}
 <MAX_TOLL> : {}
 <MAX_TIME> : {}
-<NODES>: {} 
+<NODES>: {Data/SiouxFalls_node.tntp} 
 
 <TIME_LIMIT> : {20000} // in seconds
 <ShPathAlgo> : {LC} 
@@ -50,4 +50,11 @@
 <LINK_FLOWS>: {} 
 <CONVERGENCE>: {}
 <PATH_SET>: {}
-<LATEX_OUTPUT>: {}
+<LATEX_OUTPUT>: {SiouxFalls_new.tex}
+<KML_OUTPUT>: {}
+<KML_TOLLS_OUTPUT>: {}
+<KML_SELECT_LINK>: {}
+<SELECT_LINK_ID>: {}
+<KML_DIFF_OUTPUT>: {}
+<FLOW_DIFF_FILE>: {}
+<DIFF_TOLERANCE>: {}

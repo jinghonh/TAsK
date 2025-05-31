@@ -9,8 +9,8 @@
 #include <math.h>
 #include <iostream>
 
-// 定义坐标容差值
-#define COORD_TOL 1e-2
+// 定义坐标容差值 - 增大容差以适应归一化后的坐标
+#define COORD_TOL 0.1
 
 // 构造函数1：初始化网络输出对象
 LatexNetOutput::LatexNetOutput(StarNetwork* net) : NetOutput(net) {
@@ -114,10 +114,11 @@ void LatexNetOutput::addTikzNodes(FileWriter& outputFile, const std::vector<FPTy
 				const std::vector<FPType>& yCoord, const std::vector<int>& nodeID){
 	int nbNodes = net_->getNbNodes();
 	for (int i = 0; i < nbNodes; ++i) {
-		if (xCoord[i] != -1 && yCoord[i] != -1) {  // 如果节点坐标有效
+		// 检查节点坐标是否有效，允许0坐标值，只要不是-1
+		if (xCoord[i] != -1 && yCoord[i] != -1) {  
 			std::stringstream tmpss;
-			// 创建节点绘制命令
-			tmpss << "\\node[draw,thick,circle,black,minimum size=0.75cm] (n" << nodeID[i] << ") at (" << xCoord[i] << "," 
+			// 创建节点绘制命令 - 减小节点尺寸以适应归一化坐标
+			tmpss << "\\node[draw,thick,circle,black,minimum size=0.2cm] (n" << nodeID[i] << ") at (" << xCoord[i] << "," 
 				<< yCoord[i] << ") {" << getNodeLabel(nodeID[i]) << "}; \n";
 			outputFile.writeLine(tmpss.str());
 		}
@@ -153,47 +154,36 @@ std::string LatexNetOutput::getLineLabel(StarLink* link, const std::string& abov
 std::string LatexNetOutput::drawHorizontalLink(StarLink* link, const std::string& lineOptions, 
 		bool tailIsLeft){
 	
-	int tailShiftVal = getShift(weInfo_, tailIsLeft);  // 获取偏移值
-	std::string tailShift = createShiftStr(weInfo_.shift, tailShiftVal);	
 	std::stringstream ss;
 	std::string aboveOrBelow("below");
 	if (tailIsLeft) aboveOrBelow = "above";
-	// 生成水平链接的绘制命令
-	ss << "\\draw[" << lineOptions <<"] ([" << tailShift << "]n" << link->getNodeFrom() 
-					<<	"." << weInfo_.side1 << ") " << getLineLabel(link, aboveOrBelow) << 
-					" ([" << tailShift << "]n" << 
-					link->getNodeTo() << "." << weInfo_.side2 << "); \n";
+	// 使用简化的连接方式
+	ss << "\\draw[" << lineOptions <<"] (n" << link->getNodeFrom() << ") " 
+					<< getLineLabel(link, aboveOrBelow) << " (n" << 
+					link->getNodeTo() << "); \n";
 	return ss.str();
 };
 
 // 绘制垂直链接
 std::string LatexNetOutput::drawVerticalLink(StarLink* link, const std::string& lineOptions, 
 		bool tailIsUp){
-	int headShiftVal = getShift(snInfo_, tailIsUp);  // 获取偏移值
-	std::string headShift = createShiftStr(snInfo_.shift, headShiftVal);
 	std::stringstream ss;
-	// 生成垂直链接的绘制命令
-	ss << "\\draw[" << lineOptions <<"] ([" << headShift << "]n" << link->getNodeFrom() 
-					<<	"." << snInfo_.side1 << ") " << getLineLabel(link, "above") << " ([" << headShift << "]n" << 
-					link->getNodeTo() << "." << snInfo_.side2 << "); \n";
+	// 使用简化的连接方式
+	ss << "\\draw[" << lineOptions <<"] (n" << link->getNodeFrom() << ") " 
+					<< getLineLabel(link, "above") << " (n" << 
+					link->getNodeTo() << "); \n";
 	return ss.str();
 };
 
- std::string LatexNetOutput::drawDiagonalLink(StarLink* link, const std::string& lineOptions,
+std::string LatexNetOutput::drawDiagonalLink(StarLink* link, const std::string& lineOptions,
  		const bool tailIsLeft, bool tailIsUp){
- 	int tailShiftVal = getShift(weInfo_, tailIsLeft);
-	std::string tailShift = createShiftStr(weInfo_.shift, tailShiftVal);
-	int headShiftVal = getShift(snInfo_, tailIsUp);
- 	std::string headShift = createShiftStr(snInfo_.shift, headShiftVal);
  	std::stringstream ss;
  	std::string aboveOrBelow("below");
 	if (tailIsLeft) aboveOrBelow = "above";
- 	ss << "\\draw[" << lineOptions <<"] ([" << headShift << "," << tailShift << "]n" << 
- 					link->getNodeFrom() 
-					<<	"." << snInfo_.side1 << ") " << getLineLabel(link, aboveOrBelow) 
-					<<  " ([" << headShift << "," << 
-						tailShift << "]n" << 
-					link->getNodeTo() << "." << snInfo_.side2 << "); \n";
+	// 使用简化的连接方式
+ 	ss << "\\draw[" << lineOptions <<"] (n" << link->getNodeFrom() << ") " 
+					<< getLineLabel(link, aboveOrBelow) << " (n" << 
+					link->getNodeTo() << "); \n";
  	return ss.str();
  };
 
@@ -226,13 +216,15 @@ std::string LatexNetOutput::generateLineOptions(const FlowInfo& flowInfo, StarLi
 	if (link->getFlow() / capacity > 1) {
 		color = "red";
 	}
-	double lineWidth = 0.5 + 5 * tmpFlow - 0.5 * tmpFlow;
+	// 减小线宽计算以适应归一化坐标
+	double lineWidth = 0.3 + 1.2 * tmpFlow;
 	sstm << "line width=" << lineWidth << ", " << color << ", ->";
 	return sstm.str();
 };
 
 int LatexNetOutput::getShift(PlotInfo& node, bool swapValues){
-	int shiftVal = 5;
+	// 减小偏移值以适应归一化坐标
+	int shiftVal = 0.5;
 	if (swapValues) {
 		std::swap(node.side1, node.side2);
 		return -shiftVal;

@@ -51,8 +51,8 @@ std::string BiObjLabel::toString() const{
 	std::stringstream ss;
 	ss << std::setprecision(20) << "time: " << getTime() << " toll: " << getToll() << ";" <<
 		" owner: " << owner_ ;
-		if (getPrevLink() != NULL) ss << " preLink: " << getPrevLink()->toString();
-		 if (getPrevLabel() != NULL) {
+		if (getPrevLink() != nullptr) ss << " preLink: " << getPrevLink()->toString();
+		 if (getPrevLabel() != nullptr) {
 		 	ss << " prevLabel: owner = " << getPrevLabel()->getOwner() << 
 		 	"[" << getPrevLabel()->getTime() << ", " << getPrevLabel()->getToll() << "] link: ";
 		 }

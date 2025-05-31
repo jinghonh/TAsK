@@ -20,16 +20,14 @@ KMLNetOutput::KMLNetOutput(StarNetwork* net, const std::string& logFileForMissin
 };
 
 // 析构函数
-KMLNetOutput::~KMLNetOutput(){
-
-};
+KMLNetOutput::~KMLNetOutput()= default;
 
 // 创建KML文件的主函数
 void KMLNetOutput::createKML(const std::string& fileWithNodes, const std::string& kmlFileName){
 	// 输出KML文件路径
 	std::cout << "KML将写入到: " << kmlFileName << std::endl;
 	// 获取节点数量
-	int nbNodes = net_->getNbNodes();
+	const int nbNodes = net_->getNbNodes();
 	// 初始化坐标和节点ID数组
 	std::vector<FPType> xCoord(nbNodes, 0);
 	std::vector<FPType> yCoord(nbNodes, 0);

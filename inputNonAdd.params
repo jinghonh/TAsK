@@ -16,7 +16,7 @@
 <MAX_NB_POINTS_PER_CURVE>: {}
 <MAX_TOLL> : {}
 <MAX_TIME> : {}
-<NODES>: {} 
+<NODES>: {../Data/SiouxFalls_node.tntp}
 <TIME_LIMIT> : {20000} // in seconds
 <ShPathAlgo> : {NonAdd} 
 <UseP2PShPathWithRandomReturn>: {} 
@@ -47,6 +47,12 @@
 <SHOW_CONVERGENCE>: {yes} 
 <LINK_FLOWS>: {}
 <CONVERGENCE>: {}
-<PATH_SET>: {}
-<LATEX_OUTPUT>: {}
+<PATH_SET>: {../SiouxFalls_output}
+<KML_OUTPUT>: {../SiouxFalls.kml}
+<KML_TOLLS_OUTPUT>: {}
+<KML_SELECT_LINK>: {}
+<SELECT_LINK_ID>: {}
+<KML_DIFF_OUTPUT>: {}
+<DIFF_TOLERANCE>: {1e-6}
+<LATEX_OUTPUT>: {../SiouxFalls.tex}
 	
