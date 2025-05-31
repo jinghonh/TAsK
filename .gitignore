@@ -33,3 +33,12 @@ build
 .specstory
 .cursorindexingignore
 src/ta
+log.*
+*.log
+*.pdf
+*.gz
+.vscode
+out
+*.tex
+*.kml
+output
